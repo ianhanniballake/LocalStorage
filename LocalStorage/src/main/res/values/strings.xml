@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Local Storage</string>
-    <string name="title">Local</string>
+    <string name="home">Home</string>
     <string name="check_open_all">Check Open All</string>
     <string name="check_open_images">Check Open Images</string>
     <string name="action_settings">Settings</string>

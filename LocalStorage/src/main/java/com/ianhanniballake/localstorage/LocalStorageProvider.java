@@ -23,7 +23,7 @@ import java.io.IOException;
 
 
 public class LocalStorageProvider extends DocumentsProvider {
-    private static final String ROOT = Environment.getExternalStorageDirectory().getPath();
+    private static final String ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     @Override
     public Cursor queryRoots(String[] projection) throws FileNotFoundException {
@@ -49,14 +49,14 @@ public class LocalStorageProvider extends DocumentsProvider {
             row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
 
             // COLUMN_TITLE is the root title (e.g. Gallery, Drive).
-            row.add(Root.COLUMN_TITLE, getContext().getString(R.string.title));
+            row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
 
             // This document id cannot change once it's shared.
-            row.add(Root.COLUMN_DOCUMENT_ID, ROOT);
+            row.add(Root.COLUMN_DOCUMENT_ID, root.getAbsolutePath());
 
             row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
 
-            row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(root.getPath()).getAvailableBytes());
+            row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(root.getAbsolutePath()).getAvailableBytes());
         }
         return result;
     }
@@ -66,7 +66,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         File newFile = new File(parentDocumentId, displayName);
         try {
             newFile.createNewFile();
-            return newFile.getPath();
+            return newFile.getAbsolutePath();
         } catch (IOException e) {
             Log.e(LocalStorageProvider.class.getSimpleName(), "Error creating new file " + newFile);
         }
@@ -148,9 +148,9 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     private void includeFile(MatrixCursor result, File file) throws FileNotFoundException {
         final MatrixCursor.RowBuilder row = result.newRow();
-        row.add(Document.COLUMN_DOCUMENT_ID, file.getPath());
+        row.add(Document.COLUMN_DOCUMENT_ID, file.getAbsolutePath());
         row.add(Document.COLUMN_DISPLAY_NAME, file.getName());
-        String mimeType = getDocumentType(file.getPath());
+        String mimeType = getDocumentType(file.getAbsolutePath());
         row.add(Document.COLUMN_MIME_TYPE, mimeType);
         int flags = file.canWrite() ? Document.FLAG_SUPPORTS_DELETE | Document.FLAG_SUPPORTS_WRITE : 0;
         if (mimeType.startsWith("image/"))
