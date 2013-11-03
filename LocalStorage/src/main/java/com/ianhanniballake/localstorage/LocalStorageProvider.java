@@ -32,32 +32,17 @@ public class LocalStorageProvider extends DocumentsProvider {
         final MatrixCursor result =
                 new MatrixCursor(resolveRootProjection(projection));
 
-        File[] rootDirs = {Environment.getExternalStorageDirectory()};
+        // Add Home directory
+        File homeDir = Environment.getExternalStorageDirectory();
+        final MatrixCursor.RowBuilder row = result.newRow();
+        row.add(Root.COLUMN_ROOT_ID, homeDir.getAbsolutePath());
+        row.add(Root.COLUMN_DOCUMENT_ID, homeDir.getAbsolutePath());
+        row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
+        row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
+        row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
+        row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
+        row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(homeDir.getAbsolutePath()).getAvailableBytes());
 
-        // It's possible to have multiple roots (e.g. for multiple accounts in the
-        // same app) -- just add multiple cursor rows.
-        for (File root : rootDirs) {
-            final MatrixCursor.RowBuilder row = result.newRow();
-            row.add(Root.COLUMN_ROOT_ID, root.getAbsolutePath());
-            row.add(Root.COLUMN_SUMMARY, root.getAbsolutePath());
-
-            // FLAG_SUPPORTS_CREATE means at least one directory under the root supports
-            // creating documents. FLAG_SUPPORTS_RECENTS means your application's most
-            // recently used documents will show up in the "Recents" category.
-            // FLAG_SUPPORTS_SEARCH allows users to search all documents the application
-            // shares.
-            row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
-
-            // COLUMN_TITLE is the root title (e.g. Gallery, Drive).
-            row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
-
-            // This document id cannot change once it's shared.
-            row.add(Root.COLUMN_DOCUMENT_ID, root.getAbsolutePath());
-
-            row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
-
-            row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(root.getAbsolutePath()).getAvailableBytes());
-        }
         return result;
     }
 
