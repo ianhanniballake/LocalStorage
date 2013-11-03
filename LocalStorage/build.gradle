@@ -1,0 +1,18 @@
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 19
+    }
+}
+
+dependencies {
+}
