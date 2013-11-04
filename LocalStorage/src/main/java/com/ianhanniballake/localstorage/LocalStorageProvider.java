@@ -60,16 +60,18 @@ public class LocalStorageProvider extends DocumentsProvider {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(documentId, options);
+        final int targetHeight = 2 * sizeHint.y;
+        final int targetWidth = 2 * sizeHint.x;
         final int height = options.outHeight;
         final int width = options.outWidth;
         options.inSampleSize = 1;
-        if (height > sizeHint.y || width > sizeHint.x) {
+        if (height > targetHeight || width > targetWidth) {
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / options.inSampleSize) > sizeHint.y
-                    && (halfWidth / options.inSampleSize) > sizeHint.x) {
+            while ((halfHeight / options.inSampleSize) > targetHeight
+                    || (halfWidth / options.inSampleSize) > targetWidth) {
                 options.inSampleSize *= 2;
             }
         }
