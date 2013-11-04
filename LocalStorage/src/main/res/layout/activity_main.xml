@@ -9,22 +9,29 @@
               android:orientation="vertical"
               tools:context=".MainActivity">
 
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingTop="@dimen/padding_vertical"
+        android:paddingBottom="@dimen/padding_vertical"
+        android:text="@string/description"/>
+
     <Button
-        android:id="@+id/check_open_all"
-        android:text="@string/check_open_all"
+        android:id="@+id/open_all_files"
+        android:text="@string/open_all_files"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/check_open_images"
-        android:text="@string/check_open_images"
+        android:id="@+id/open_images"
+        android:text="@string/open_images"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
 
     <TextView
         android:id="@+id/returned_name"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="@dimen/padding_vertical"
+        android:paddingBottom="@dimen/padding_vertical"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
 

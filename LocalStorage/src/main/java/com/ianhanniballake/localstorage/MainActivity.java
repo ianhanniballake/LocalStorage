@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button openAll = (Button) findViewById(R.id.check_open_all);
+        Button openAll = (Button) findViewById(R.id.open_all_files);
         openAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, READ_REQUEST_CODE);
             }
         });
-        Button openImages = (Button) findViewById(R.id.check_open_images);
+        Button openImages = (Button) findViewById(R.id.open_images);
         openImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
