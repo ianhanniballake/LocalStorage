@@ -2,44 +2,44 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:orientation="vertical"
               tools:context=".MainActivity">
 
     <TextView
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:paddingTop="@dimen/padding_vertical"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_vertical"
+        android:paddingTop="@dimen/padding_vertical"
         android:text="@string/description"/>
 
     <Button
         android:id="@+id/open_all_files"
-        android:text="@string/open_all_files"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="@string/open_all_files"/>
 
     <Button
         android:id="@+id/open_images"
-        android:text="@string/open_images"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
+        android:text="@string/open_images"/>
 
     <TextView
         android:id="@+id/returned_name"
-        android:paddingTop="@dimen/padding_vertical"
-        android:paddingBottom="@dimen/padding_vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:paddingBottom="@dimen/padding_vertical"
+        android:paddingTop="@dimen/padding_vertical"/>
 
     <ImageView
         android:id="@+id/returned_image"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:layout_width="match_parent"/>
+        android:scaleType="centerCrop"/>
 
 </LinearLayout>
