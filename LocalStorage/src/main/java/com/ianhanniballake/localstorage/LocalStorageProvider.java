@@ -21,7 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-
 public class LocalStorageProvider extends DocumentsProvider {
     private static final String ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
 
@@ -31,7 +30,6 @@ public class LocalStorageProvider extends DocumentsProvider {
         // projection if "projection" is null.
         final MatrixCursor result =
                 new MatrixCursor(resolveRootProjection(projection));
-
         // Add Home directory
         File homeDir = Environment.getExternalStorageDirectory();
         final MatrixCursor.RowBuilder row = result.newRow();
@@ -42,7 +40,6 @@ public class LocalStorageProvider extends DocumentsProvider {
         row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
         row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
         row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(homeDir.getAbsolutePath()).getAvailableBytes());
-
         return result;
     }
 
@@ -67,10 +64,8 @@ public class LocalStorageProvider extends DocumentsProvider {
         final int width = options.outWidth;
         options.inSampleSize = 1;
         if (height > sizeHint.y || width > sizeHint.x) {
-
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
-
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
             while ((halfHeight / options.inSampleSize) > sizeHint.y

@@ -26,7 +26,7 @@
         </activity>
         <provider
             android:name="com.ianhanniballake.localstorage.LocalStorageProvider"
-            android:authorities="com.ianhanniballake.localstorage"
+            android:authorities="com.ianhanniballake.localstorage.documents"
             android:grantUriPermissions="true"
             android:exported="true"
             android:permission="android.permission.MANAGE_DOCUMENTS">
