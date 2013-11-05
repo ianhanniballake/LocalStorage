@@ -112,8 +112,10 @@ public class LocalStorageProvider extends DocumentsProvider {
         Log.d(LocalStorageProvider.class.getSimpleName(), "Parent Document Id: " + parentDocumentId);
         final File parent = new File(parentDocumentId);
         for (File file : parent.listFiles()) {
-            // Adds the file's display name, MIME type, size, and so on.
-            includeFile(result, file);
+            if (!file.getName().startsWith(".")) {
+                // Adds the file's display name, MIME type, size, and so on.
+                includeFile(result, file);
+            }
         }
         return result;
     }
