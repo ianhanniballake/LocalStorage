@@ -5,5 +5,20 @@
     <string name="home">Home</string>
     <string name="open_all_files">Open All Files</string>
     <string name="open_images">Open Images</string>
-    <string name="action_settings">Settings</string>
+    <!-- Donate -->
+    <string name="donate">Donate</string>
+    <string name="donate_header">Please consider supporting further development by donating to the developer!</string>
+    <string name="donate_paypal_title">PayPal</string>
+    <string name="donate_paypal_description">You can choose how much you want to donate after clicking the button</string>
+    <string name="donate_paypal_button">Donate via PayPal</string>
+    <string name="donate_in_app_title">Google Play In-App Billing</string>
+    <string name="donate_in_app_description">Donate via Google Play In-App Billing</string>
+    <string name="donate_in_app_spinner_text">Select a donation amount</string>
+    <string name="donate_in_app_button">Donate</string>
+    <string-array name="donate_in_app_sku_array">
+        <item>localstorage.donations.small</item>
+        <item>localstorage.donations.medium</item>
+        <item>localstorage.donations.large</item>
+    </string-array>
+    <string name="donate_thank_you">Thank you for your donation!</string>
 </resources>

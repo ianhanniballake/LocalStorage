@@ -12,6 +12,23 @@ android {
         minSdkVersion 19
         targetSdkVersion 19
     }
+
+    signingConfigs {
+        releaseConfig {
+            storeFile file("D:\\Google Drive\\Programming\\Android.keystore")
+            storePassword "Android2011#@"
+            keyAlias "local storage"
+            keyPassword "localstorage2013#@"
+        }
+    }
+
+    buildTypes {
+        release {
+            runProguard true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            signingConfig signingConfigs.releaseConfig
+        }
+    }
 }
 
 dependencies {

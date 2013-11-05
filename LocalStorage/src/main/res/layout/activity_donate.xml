@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/donate_header"
+            android:textIsSelectable="false"/>
+
+        <TextView
+            android:id="@+id/paypal_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header"
+            android:paddingTop="10dp"
+            android:text="@string/donate_paypal_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textIsSelectable="false"/>
+
+        <TextView
+            android:id="@+id/paypal_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/paypal_title"
+            android:text="@string/donate_paypal_description"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textIsSelectable="false"/>
+
+        <Button
+            android:id="@+id/paypal_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/paypal_description"
+            android:text="@string/donate_paypal_button"/>
+
+        <RelativeLayout
+            android:id="@+id/in_app_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/paypal_button"
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/in_app_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/donate_in_app_title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textIsSelectable="false"/>
+
+            <TextView
+                android:id="@+id/in_app_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/in_app_title"
+                android:text="@string/donate_in_app_description"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textIsSelectable="false"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/in_app_description"
+                android:orientation="horizontal"
+                android:paddingTop="5dp">
+
+                <Spinner
+                    android:id="@+id/donate_in_app_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:prompt="@string/donate_in_app_spinner_text"
+                    tools:listitem="@android:layout/simple_spinner_dropdown_item"/>
+
+                <Button
+                    android:id="@+id/donate__in_app_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="@string/donate_in_app_button"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer-array name="donate_in_app_price_array">
+        <item>990000</item>
+        <item>1990000</item>
+        <item>4990000</item>
+    </integer-array>
+
+</resources>
