@@ -15,10 +15,10 @@ android {
 
     signingConfigs {
         releaseConfig {
-            storeFile file("D:\\Google Drive\\Programming\\Android.keystore")
-            storePassword "Android2011#@"
-            keyAlias "local storage"
-            keyPassword "localstorage2013#@"
+            storeFile file(System.getenv("KEYSTORE"))
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("LOCAL_STORAGE_ALIAS")
+            keyPassword System.getenv("LOCAL_STORAGE_PASSWORD")
         }
     }
 
