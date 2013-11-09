@@ -22,10 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class LocalStorageProvider extends DocumentsProvider {
-    private static final String ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
-
     @Override
-    public Cursor queryRoots(String[] projection) throws FileNotFoundException {
+    public Cursor queryRoots(final String[] projection) throws FileNotFoundException {
         // Create a cursor with either the requested fields, or the default
         // projection if "projection" is null.
         final MatrixCursor result =
@@ -44,7 +42,8 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public String createDocument(String parentDocumentId, String mimeType, String displayName) throws FileNotFoundException {
+    public String createDocument(final String parentDocumentId, final String mimeType,
+                                 final String displayName) throws FileNotFoundException {
         File newFile = new File(parentDocumentId, displayName);
         try {
             newFile.createNewFile();
@@ -56,7 +55,8 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public AssetFileDescriptor openDocumentThumbnail(String documentId, Point sizeHint, CancellationSignal signal) throws FileNotFoundException {
+    public AssetFileDescriptor openDocumentThumbnail(final String documentId, final Point sizeHint,
+                                                     final CancellationSignal signal) throws FileNotFoundException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(documentId, options);
@@ -97,7 +97,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         return new AssetFileDescriptor(ParcelFileDescriptor.open(tempFile, ParcelFileDescriptor.MODE_READ_ONLY), 0, AssetFileDescriptor.UNKNOWN_LENGTH);
     }
 
-    private String[] resolveRootProjection(String[] projection) {
+    private String[] resolveRootProjection(final String[] projection) {
         if (projection != null)
             return projection;
         else
@@ -106,10 +106,10 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryChildDocuments(String parentDocumentId, String[] projection, String sortOrder) throws FileNotFoundException {
+    public Cursor queryChildDocuments(final String parentDocumentId, final String[] projection,
+                                      final String sortOrder) throws FileNotFoundException {
         final MatrixCursor result = new
                 MatrixCursor(resolveDocumentProjection(projection));
-        Log.d(LocalStorageProvider.class.getSimpleName(), "Parent Document Id: " + parentDocumentId);
         final File parent = new File(parentDocumentId);
         for (File file : parent.listFiles()) {
             if (!file.getName().startsWith(".")) {
@@ -121,7 +121,7 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryDocument(String documentId, String[] projection) throws FileNotFoundException {
+    public Cursor queryDocument(final String documentId, final String[] projection) throws FileNotFoundException {
         Log.d(LocalStorageProvider.class.getSimpleName(), "Document Id: " + documentId);
         // Create a cursor with the requested projection, or the default projection.
         final MatrixCursor result = new
@@ -130,7 +130,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         return result;
     }
 
-    private void includeFile(MatrixCursor result, File file) throws FileNotFoundException {
+    private void includeFile(final MatrixCursor result, final File file) throws FileNotFoundException {
         final MatrixCursor.RowBuilder row = result.newRow();
         row.add(Document.COLUMN_DOCUMENT_ID, file.getAbsolutePath());
         row.add(Document.COLUMN_DISPLAY_NAME, file.getName());
@@ -145,7 +145,7 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public String getDocumentType(String documentId) throws FileNotFoundException {
+    public String getDocumentType(final String documentId) throws FileNotFoundException {
         File file = new File(documentId);
         if (file.isDirectory())
             return Document.MIME_TYPE_DIR;
@@ -161,11 +161,11 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public void deleteDocument(String documentId) throws FileNotFoundException {
+    public void deleteDocument(final String documentId) throws FileNotFoundException {
         new File(documentId).delete();
     }
 
-    private String[] resolveDocumentProjection(String[] projection) {
+    private String[] resolveDocumentProjection(final String[] projection) {
         if (projection != null)
             return projection;
         else
@@ -174,7 +174,8 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public ParcelFileDescriptor openDocument(String documentId, String mode, CancellationSignal signal) throws FileNotFoundException {
+    public ParcelFileDescriptor openDocument(final String documentId, final String mode,
+                                             final CancellationSignal signal) throws FileNotFoundException {
         File file = new File(documentId);
         final boolean isWrite = (mode.indexOf('w') != -1);
         if (isWrite) {
