@@ -51,6 +51,8 @@ public class LocalStorageProvider extends DocumentsProvider {
         // These columns are optional
         row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
         row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(homeDir.getAbsolutePath()).getAvailableBytes());
+        // Root.COLUMN_MIME_TYPE is another optional column and useful if you have multiple roots with different
+        // types of mime types (roots that don't match the requested mime type are automatically hidden)
         return result;
     }
 
@@ -122,6 +124,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         final File parent = new File(parentDocumentId);
         for (File file : parent.listFiles()) {
+            // Don't show hidden files/folders
             if (!file.getName().startsWith(".")) {
                 // Adds the file's display name, MIME type, size, and so on.
                 includeFile(result, file);
@@ -146,6 +149,8 @@ public class LocalStorageProvider extends DocumentsProvider {
         String mimeType = getDocumentType(file.getAbsolutePath());
         row.add(Document.COLUMN_MIME_TYPE, mimeType);
         int flags = file.canWrite() ? Document.FLAG_SUPPORTS_DELETE | Document.FLAG_SUPPORTS_WRITE : 0;
+        // We only show thumbnails for image files - expect a call to openDocumentThumbnail for each file that has
+        // this flag set
         if (mimeType.startsWith("image/"))
             flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
         row.add(Document.COLUMN_FLAGS, flags);
@@ -153,6 +158,9 @@ public class LocalStorageProvider extends DocumentsProvider {
         row.add(Document.COLUMN_SIZE, file.length());
         // These columns are optional
         row.add(Document.COLUMN_LAST_MODIFIED, file.lastModified());
+        // Document.COLUMN_ICON can be a resource id identifying a custom icon. The system provides default icons
+        // based on mime type
+        // Document.COLUMN_SUMMARY is optional additional information about the file
     }
 
     @Override
