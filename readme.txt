@@ -1,1 +1,0 @@
-Local Storage provides access to your local storage (SD Card) via the Android 4.4 Storage Access Framework
