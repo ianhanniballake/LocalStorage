@@ -22,21 +22,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class LocalStorageProvider extends DocumentsProvider {
+    /**
+     * Default root projection: everything but Root.COLUMN_MIME_TYPES
+     */
+    private final static String[] DEFAULT_ROOT_PROJECTION = new String[]{Root.COLUMN_ROOT_ID, Root.COLUMN_SUMMARY,
+            Root.COLUMN_FLAGS, Root.COLUMN_TITLE, Root.COLUMN_DOCUMENT_ID, Root.COLUMN_ICON,
+            Root.COLUMN_AVAILABLE_BYTES};
+    /**
+     * Default document projection: everything but Document.COLUMN_ICON and Document.COLUMN_SUMMARY
+     */
+    private final static String[] DEFAULT_DOCUMENT_PROJECTION = new String[]{Document.COLUMN_DOCUMENT_ID,
+            Document.COLUMN_DISPLAY_NAME, Document.COLUMN_FLAGS, Document.COLUMN_MIME_TYPE, Document.COLUMN_SIZE,
+            Document.COLUMN_LAST_MODIFIED};
+
     @Override
     public Cursor queryRoots(final String[] projection) throws FileNotFoundException {
-        // Create a cursor with either the requested fields, or the default
-        // projection if "projection" is null.
-        final MatrixCursor result =
-                new MatrixCursor(resolveRootProjection(projection));
+        // Create a cursor with either the requested fields, or the default projection if "projection" is null.
+        final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_ROOT_PROJECTION);
         // Add Home directory
         File homeDir = Environment.getExternalStorageDirectory();
         final MatrixCursor.RowBuilder row = result.newRow();
+        // These columns are required
         row.add(Root.COLUMN_ROOT_ID, homeDir.getAbsolutePath());
         row.add(Root.COLUMN_DOCUMENT_ID, homeDir.getAbsolutePath());
         row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
-        row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
         row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
         row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
+        // These columns are optional
+        row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
         row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(homeDir.getAbsolutePath()).getAvailableBytes());
         return result;
     }
@@ -57,6 +70,7 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public AssetFileDescriptor openDocumentThumbnail(final String documentId, final Point sizeHint,
                                                      final CancellationSignal signal) throws FileNotFoundException {
+        // Assume documentId points to an image file. Build a thumbnail no larger than twice the sizeHint
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(documentId, options);
@@ -77,6 +91,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         }
         options.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(documentId, options);
+        // Write out the thumbnail to a temporary file
         File tempFile = null;
         FileOutputStream out = null;
         try {
@@ -94,22 +109,17 @@ public class LocalStorageProvider extends DocumentsProvider {
                     Log.e(LocalStorageProvider.class.getSimpleName(), "Error closing thumbnail", e);
                 }
         }
-        return new AssetFileDescriptor(ParcelFileDescriptor.open(tempFile, ParcelFileDescriptor.MODE_READ_ONLY), 0, AssetFileDescriptor.UNKNOWN_LENGTH);
-    }
-
-    private String[] resolveRootProjection(final String[] projection) {
-        if (projection != null)
-            return projection;
-        else
-            return new String[]{Root.COLUMN_ROOT_ID, Root.COLUMN_SUMMARY, Root.COLUMN_FLAGS, Root.COLUMN_TITLE,
-                    Root.COLUMN_DOCUMENT_ID, Root.COLUMN_ICON, Root.COLUMN_AVAILABLE_BYTES};
+        // It appears the Storage Framework UI caches these results quite aggressively so there is little reason to
+        // write your own caching layer beyond what you need to return a single AssetFileDescriptor
+        return new AssetFileDescriptor(ParcelFileDescriptor.open(tempFile, ParcelFileDescriptor.MODE_READ_ONLY), 0,
+                AssetFileDescriptor.UNKNOWN_LENGTH);
     }
 
     @Override
     public Cursor queryChildDocuments(final String parentDocumentId, final String[] projection,
                                       final String sortOrder) throws FileNotFoundException {
-        final MatrixCursor result = new
-                MatrixCursor(resolveDocumentProjection(projection));
+        // Create a cursor with either the requested fields, or the default projection if "projection" is null.
+        final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         final File parent = new File(parentDocumentId);
         for (File file : parent.listFiles()) {
             if (!file.getName().startsWith(".")) {
@@ -122,16 +132,15 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     @Override
     public Cursor queryDocument(final String documentId, final String[] projection) throws FileNotFoundException {
-        Log.d(LocalStorageProvider.class.getSimpleName(), "Document Id: " + documentId);
-        // Create a cursor with the requested projection, or the default projection.
-        final MatrixCursor result = new
-                MatrixCursor(resolveDocumentProjection(projection));
+        // Create a cursor with either the requested fields, or the default projection if "projection" is null.
+        final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         includeFile(result, new File(documentId));
         return result;
     }
 
     private void includeFile(final MatrixCursor result, final File file) throws FileNotFoundException {
         final MatrixCursor.RowBuilder row = result.newRow();
+        // These columns are required
         row.add(Document.COLUMN_DOCUMENT_ID, file.getAbsolutePath());
         row.add(Document.COLUMN_DISPLAY_NAME, file.getName());
         String mimeType = getDocumentType(file.getAbsolutePath());
@@ -140,7 +149,9 @@ public class LocalStorageProvider extends DocumentsProvider {
         if (mimeType.startsWith("image/"))
             flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
         row.add(Document.COLUMN_FLAGS, flags);
+        // COLUMN_SIZE is required, but can be null
         row.add(Document.COLUMN_SIZE, file.length());
+        // These columns are optional
         row.add(Document.COLUMN_LAST_MODIFIED, file.lastModified());
     }
 
@@ -149,6 +160,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         File file = new File(documentId);
         if (file.isDirectory())
             return Document.MIME_TYPE_DIR;
+        // From FileProvider.getType(Uri)
         final int lastDot = file.getName().lastIndexOf('.');
         if (lastDot >= 0) {
             final String extension = file.getName().substring(lastDot + 1);
@@ -163,14 +175,6 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public void deleteDocument(final String documentId) throws FileNotFoundException {
         new File(documentId).delete();
-    }
-
-    private String[] resolveDocumentProjection(final String[] projection) {
-        if (projection != null)
-            return projection;
-        else
-            return new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_DISPLAY_NAME, Document.COLUMN_FLAGS,
-                    Document.COLUMN_MIME_TYPE, Document.COLUMN_SIZE, Document.COLUMN_LAST_MODIFIED};
     }
 
     @Override
