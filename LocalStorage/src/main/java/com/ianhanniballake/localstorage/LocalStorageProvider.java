@@ -13,6 +13,7 @@ import android.os.StatFs;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -41,19 +42,34 @@ public class LocalStorageProvider extends DocumentsProvider {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_ROOT_PROJECTION);
         // Add Home directory
         File homeDir = Environment.getExternalStorageDirectory();
+        if (TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)) {
+            addRootDirectory(result, homeDir, getContext().getString(R.string.home),
+                    Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
+        }
+        // Add SD card directory
+        File sdcard = new File("/storage/extSdCard");
+        String storageState = Environment.getStorageState(sdcard);
+        if (TextUtils.equals(storageState, Environment.MEDIA_MOUNTED) ||
+                TextUtils.equals(storageState, Environment.MEDIA_MOUNTED_READ_ONLY)) {
+            // Always assume SD Card is read-only
+            addRootDirectory(result, sdcard, getContext().getString(R.string.sdcard), Root.FLAG_LOCAL_ONLY);
+        }
+        return result;
+    }
+
+    public void addRootDirectory(MatrixCursor result, final File directory, final String title, final int flags) {
         final MatrixCursor.RowBuilder row = result.newRow();
         // These columns are required
-        row.add(Root.COLUMN_ROOT_ID, homeDir.getAbsolutePath());
-        row.add(Root.COLUMN_DOCUMENT_ID, homeDir.getAbsolutePath());
-        row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
-        row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
+        row.add(Root.COLUMN_ROOT_ID, directory.getAbsolutePath());
+        row.add(Root.COLUMN_DOCUMENT_ID, directory.getAbsolutePath());
+        row.add(Root.COLUMN_TITLE, title);
+        row.add(Root.COLUMN_FLAGS, flags);
         row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
         // These columns are optional
-        row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
-        row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(homeDir.getAbsolutePath()).getAvailableBytes());
+        row.add(Root.COLUMN_SUMMARY, directory.getAbsolutePath());
+        row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(directory.getAbsolutePath()).getAvailableBytes());
         // Root.COLUMN_MIME_TYPE is another optional column and useful if you have multiple roots with different
         // types of mime types (roots that don't match the requested mime type are automatically hidden)
-        return result;
     }
 
     @Override
