@@ -57,20 +57,20 @@ public class LocalStorageProvider extends DocumentsProvider {
             // types of mime types (roots that don't match the requested mime type are automatically hidden)
         }
         // Add SD card directory
-        File sdcard = new File("/storage/extSdCard");
-        String storageState = Environment.getStorageState(sdcard);
+        File sdCard = new File("/storage/extSdCard");
+        String storageState = Environment.getStorageState(sdCard);
         if (TextUtils.equals(storageState, Environment.MEDIA_MOUNTED) ||
                 TextUtils.equals(storageState, Environment.MEDIA_MOUNTED_READ_ONLY)) {
             final MatrixCursor.RowBuilder row = result.newRow();
             // These columns are required
-            row.add(Root.COLUMN_ROOT_ID, sdcard.getAbsolutePath());
-            row.add(Root.COLUMN_DOCUMENT_ID, sdcard.getAbsolutePath());
-            row.add(Root.COLUMN_TITLE, getContext().getString(R.string.sdcard));
+            row.add(Root.COLUMN_ROOT_ID, sdCard.getAbsolutePath());
+            row.add(Root.COLUMN_DOCUMENT_ID, sdCard.getAbsolutePath());
+            row.add(Root.COLUMN_TITLE, getContext().getString(R.string.sd_card));
             // Always assume SD Card is read-only
             row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY);
-            row.add(Root.COLUMN_ICON, R.drawable.ic_sdcard);
-            row.add(Root.COLUMN_SUMMARY, sdcard.getAbsolutePath());
-            row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(sdcard.getAbsolutePath()).getAvailableBytes());
+            row.add(Root.COLUMN_ICON, R.drawable.ic_sd_card);
+            row.add(Root.COLUMN_SUMMARY, sdCard.getAbsolutePath());
+            row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(sdCard.getAbsolutePath()).getAvailableBytes());
         }
         return result;
     }
