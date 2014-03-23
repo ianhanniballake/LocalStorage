@@ -3,8 +3,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 tools:context=".MainActivity">
 
@@ -42,9 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/description"
         android:layout_marginBottom="@dimen/padding_vertical"
-        android:layout_marginLeft="@dimen/padding_horizontal"
+        android:layout_marginStart="@dimen/padding_horizontal"
         android:layout_marginTop="@dimen/padding_vertical"
-        android:layout_toRightOf="@id/open_all_files"/>
+        android:layout_toEndOf="@id/open_all_files"/>
 
     <ImageView
         android:id="@+id/returned_image"
@@ -52,8 +52,8 @@
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/returned_name"
-        android:layout_marginLeft="@dimen/padding_horizontal"
-        android:layout_toRightOf="@id/open_all_files"
+        android:layout_marginStart="@dimen/padding_horizontal"
+        android:layout_toEndOf="@id/open_all_files"
         android:scaleType="fitCenter"/>
 
 </RelativeLayout>
