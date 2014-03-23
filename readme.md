@@ -4,6 +4,6 @@ The focus on this app is not on the included UI, but instead on the [LocalDocume
 
 You can download the app from [Google Play](https://play.google.com/store/apps/details?id=com.ianhanniballake.localstorage).
 
-![Picker](art/screenshot_phone_picker.png?raw=true)
-![Picker 2](art/screenshot_phone_picker_2.png?raw=true)
-![Phone UI](art/screenshot_phone_ui.png?raw=true)
+![Picker](art/screenshots/screenshot_picker.png?raw=true)
+![Picker 2](art/screenshots/screenshot_picker_2.png?raw=true)
+![Phone UI](art/screenshots/screenshot_ui.png?raw=true)
