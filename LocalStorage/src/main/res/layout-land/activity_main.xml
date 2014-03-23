@@ -1,13 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context=".MainActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/description"
@@ -20,32 +19,41 @@
         android:id="@+id/open_all_files"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/description"
         android:text="@string/open_all_files"/>
 
     <Button
         android:id="@+id/open_images"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/open_all_files"
         android:text="@string/open_images"/>
 
     <Button
         android:id="@+id/create_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/open_images"
         android:text="@string/create_file"/>
 
     <TextView
         android:id="@+id/returned_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/description"
+        android:layout_toRightOf="@id/open_all_files"
         android:paddingBottom="@dimen/padding_vertical"
+        android:paddingLeft="@dimen/padding_horizontal"
         android:paddingTop="@dimen/padding_vertical"/>
 
     <ImageView
         android:id="@+id/returned_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/returned_name"
+        android:layout_toRightOf="@id/open_all_files"
+        android:paddingLeft="@dimen/padding_horizontal"
         android:scaleType="fitCenter"/>
 
-</LinearLayout>
+</RelativeLayout>
