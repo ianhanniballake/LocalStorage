@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE = 1;
-    private TextView returnedName;
-    private ImageView returnedImage;
+    private TextView mReturnedName;
+    private ImageView mReturnedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +55,8 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
-        returnedName = (TextView) findViewById(R.id.returned_name);
-        returnedImage = (ImageView) findViewById(R.id.returned_image);
+        mReturnedName = (TextView) findViewById(R.id.returned_name);
+        mReturnedImage = (ImageView) findViewById(R.id.returned_image);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class MainActivity extends Activity {
             return;
         }
         if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null) {
-            returnedName.setText("");
-            returnedImage.setImageURI(null);
+            mReturnedName.setText("");
+            mReturnedImage.setImageURI(null);
             return;
         }
         Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
@@ -97,11 +97,11 @@ public class MainActivity extends Activity {
                 // provider-specific, and might not necessarily be the file name.
                 String displayName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                returnedName.setText(displayName);
-                returnedImage.setImageURI(data.getData());
+                mReturnedName.setText(displayName);
+                mReturnedImage.setImageURI(data.getData());
             } else {
-                returnedName.setText("");
-                returnedImage.setImageURI(null);
+                mReturnedName.setText("");
+                mReturnedImage.setImageURI(null);
             }
         } finally {
             if (cursor != null)
