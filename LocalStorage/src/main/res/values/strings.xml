@@ -11,12 +11,11 @@
     <string name="donate">Donate</string>
     <string name="donate_header">Please consider supporting further development by donating to the developer!</string>
     <string name="donate_paypal_title">PayPal</string>
-    <string name="donate_paypal_description">You can choose how much you want to donate after clicking the button</string>
-    <string name="donate_paypal_button">Donate via PayPal</string>
-    <string name="donate_in_app_title">Google Play In-App Billing</string>
-    <string name="donate_in_app_description">Donate via Google Play In-App Billing</string>
+    <string name="donate_paypal_description">Donate any amount with PayPal</string>
+    <string name="donate_button">Donate</string>
+    <string name="donate_in_app_title">Google Play</string>
+    <string name="donate_in_app_description">Donate using your Google account</string>
     <string name="donate_in_app_spinner_text">Select a donation amount</string>
-    <string name="donate_in_app_button">Donate</string>
     <string-array name="donate_in_app_sku_array">
         <item>localstorage.donations.small</item>
         <item>localstorage.donations.medium</item>

@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -83,7 +82,7 @@ public class DonateActivity extends Activity {
         if (o == null)
             return 0;
         else if (o instanceof Integer)
-            return ((Integer) o).intValue();
+            return (Integer) o;
         else if (o instanceof Long)
             return (int) ((Long) o).longValue();
         else
@@ -102,7 +101,7 @@ public class DonateActivity extends Activity {
         if (o == null)
             return 0;
         else if (o instanceof Integer)
-            return ((Integer) o).intValue();
+            return (Integer) o;
         else if (o instanceof Long)
             return (int) ((Long) o).longValue();
         else
@@ -131,13 +130,13 @@ public class DonateActivity extends Activity {
                 // EasyTracker.getTracker().sendEvent("Donate", "Purchase invalid data fields", purchasedSku, -1L);
                 return;
             }
-            Purchase purchase = null;
+            Purchase purchase;
             try {
                 purchase = new Purchase(ITEM_TYPE_INAPP, purchaseData, dataSignature);
                 final String sku = purchase.getSku();
                 // Verify signature
                 if (!Security.verifyPurchase(publicKey, purchaseData, dataSignature)) {
-                    Log.e(DonateActivity.class.getSimpleName(), "Purhcase: Signature verification failed " + sku);
+                    Log.e(DonateActivity.class.getSimpleName(), "Purchase: Signature verification failed " + sku);
                     // EasyTracker.getTracker().sendEvent("Donate", "Purchase signature verification failed", sku, -1L);
                     return;
                 }
@@ -231,8 +230,7 @@ public class DonateActivity extends Activity {
                         return;
                     }
                     final PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                    startIntentSenderForResult(pendingIntent.getIntentSender(), RC_REQUEST, new Intent(),
-                            Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
+                    startIntentSenderForResult(pendingIntent.getIntentSender(), RC_REQUEST, new Intent(), 0, 0, 0);
                 } catch (final SendIntentException e) {
                     Log.e(DonateActivity.class.getSimpleName(), "Buy: Send intent failed", e);
                     // EasyTracker.getTracker().sendEvent("Donate", "Buy send intent failed", purchasedSku, -1L);
@@ -261,7 +259,6 @@ public class DonateActivity extends Activity {
                     } catch (final RemoteException e) {
                         Log.e(DonateActivity.class.getSimpleName(), "Initialize: Remote exception", e);
                         // EasyTracker.getTracker().sendEvent("Donate", "Initialize remote exception", "", -1L);
-                        return;
                     }
                 }
 
@@ -377,10 +374,10 @@ public class DonateActivity extends Activity {
                 if (BuildConfig.DEBUG)
                     Log.d(DonateActivity.class.getSimpleName(), "Consume completed successfully " + sku);
                 // EasyTracker.getTracker().sendEvent("Donate", "Purchased", sku, 1L);
-                final long purchasedPriceMicro = skuPrices.containsKey(sku) ? skuPrices.get(sku).longValue() : 0;
-                final String purchasedName = skuNames.containsKey(sku) ? skuNames.get(sku) : sku;
+                // final long purchasedPriceMicro = skuPrices.containsKey(sku) ? skuPrices.get(sku).longValue() : 0;
+                // final String purchasedName = skuNames.containsKey(sku) ? skuNames.get(sku) : sku;
                 // final Transaction transaction = new Transaction.Builder(purchase.getOrderId(), purchasedPriceMicro).setAffiliation("Google Play").build();
-                //transaction.addItem(new Item.Builder(sku, purchasedName, purchasedPriceMicro, 1L).setProductCategory("Donation").build());
+                // transaction.addItem(new Item.Builder(sku, purchasedName, purchasedPriceMicro, 1L).setProductCategory("Donation").build());
                 // EasyTracker.getTracker().sendTransaction(transaction);
             }
             Toast.makeText(DonateActivity.this, R.string.donate_thank_you, Toast.LENGTH_LONG).show();
@@ -436,7 +433,7 @@ public class DonateActivity extends Activity {
             if (!purchases.isEmpty()) {
                 final IInAppBillingService service = mBillingService.get();
                 if (service != null)
-                    new ConsumeAsyncTask(service, false).execute(purchases.toArray(new Purchase[0]));
+                    new ConsumeAsyncTask(service, false).execute(purchases.toArray(new Purchase[purchases.size()]));
                 else
                     Log.w(DonateActivity.class.getSimpleName(), "Inventory: Billing service is null");
             }
@@ -455,7 +452,7 @@ public class DonateActivity extends Activity {
             // Apply the adapter to the spinner
             inAppSpinner.setAdapter(adapter);
             // And finally show the In-App Billing UI
-            final RelativeLayout inAppLayout = (RelativeLayout) findViewById(R.id.in_app_layout);
+            final View inAppLayout = findViewById(R.id.in_app_layout);
             inAppLayout.setVisibility(View.VISIBLE);
         }
 
@@ -483,14 +480,12 @@ public class DonateActivity extends Activity {
                     // EasyTracker.getTracker().sendEvent("Donate", "Purchases invalid data", "", -1L);
                     return -1;
                 }
-                final ArrayList<String> ownedSkus = ownedItems.getStringArrayList(RESPONSE_INAPP_ITEM_LIST);
                 final ArrayList<String> purchaseDataList = ownedItems
                         .getStringArrayList(RESPONSE_INAPP_PURCHASE_DATA_LIST);
                 final ArrayList<String> signatureList = ownedItems.getStringArrayList(RESPONSE_INAPP_SIGNATURE_LIST);
                 for (int i = 0; i < purchaseDataList.size(); ++i) {
                     final String purchaseData = purchaseDataList.get(i);
                     final String signature = signatureList.get(i);
-                    ownedSkus.get(i);
                     final Purchase purchase = new Purchase(ITEM_TYPE_INAPP, purchaseData, signature);
                     if (purchase.getSku().startsWith("android.test") || Security.verifyPurchase(publicKey,
                             purchaseData, signature)) {
