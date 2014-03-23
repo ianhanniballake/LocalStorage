@@ -24,6 +24,10 @@ import java.io.IOException;
 
 public class LocalStorageProvider extends DocumentsProvider {
     /**
+     * Authority that matches the authority in the AndroidManifest.xml for LocalStorageProvider
+     */
+    public final static String AUTHORITY = "com.ianhanniballake.localstorage.documents";
+    /**
      * Default root projection: everything but Root.COLUMN_MIME_TYPES
      */
     private final static String[] DEFAULT_ROOT_PROJECTION = new String[]{Root.COLUMN_ROOT_ID, Root.COLUMN_SUMMARY,

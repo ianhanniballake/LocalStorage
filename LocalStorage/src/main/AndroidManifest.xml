@@ -30,6 +30,13 @@
             android:label="@string/donate"
             android:parentActivityName=".MainActivity"/>
 
+        <receiver android:name=".MediaAvailabilityBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.MEDIA_REMOVED"/>
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="com.ianhanniballake.localstorage.LocalStorageProvider"
             android:authorities="com.ianhanniballake.localstorage.documents"
