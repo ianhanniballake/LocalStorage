@@ -6,6 +6,7 @@
     <string name="sd_card">SD Card</string>
     <string name="open_all_files">Open All Files</string>
     <string name="open_images">Open Images</string>
+    <string name="create_file">Create a file</string>
     <!-- Donate -->
     <string name="donate">Donate</string>
     <string name="donate_header">Please consider supporting further development by donating to the developer!</string>
