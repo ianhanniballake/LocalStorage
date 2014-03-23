@@ -12,7 +12,8 @@
     <TextView
         android:id="@+id/description"
         android:layout_columnSpan="@integer/column_span"
-        android:paddingBottom="@dimen/padding_vertical"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginBottom="@dimen/padding_vertical"
         android:text="@string/description"/>
 
     <Button
@@ -30,13 +31,14 @@
     <TextView
         android:id="@+id/returned_name"
         android:layout_columnSpan="@integer/column_span"
+        android:layout_gravity="fill_horizontal"
         android:layout_marginBottom="@dimen/padding_vertical"
         android:layout_marginTop="@dimen/padding_vertical"/>
 
     <ImageView
         android:id="@+id/returned_image"
         android:layout_columnSpan="@integer/column_span"
-        android:layout_gravity="fill_vertical|center_horizontal"
+        android:layout_gravity="fill_vertical|fill_horizontal"
         android:scaleType="fitCenter"/>
 
 </GridLayout>
