@@ -4,8 +4,8 @@
     <string name="description">The main use of this application is not through this Activity, but instead as a document provider to be used alongside Google Drive, Gallery, and other apps. Use the below buttons to preview your local storage as other apps would see it.</string>
     <string name="home">Home</string>
     <string name="sd_card">SD Card</string>
-    <string name="open_all_files">Open All Files</string>
-    <string name="open_images">Open Images</string>
+    <string name="open_all_files">Open all files</string>
+    <string name="open_images">Open images</string>
     <string name="create_file">Create a file</string>
     <!-- Donate -->
     <string name="donate">Donate</string>
