@@ -39,6 +39,14 @@ package com.ianhanniballake.localstorage.inappbilling;
 @SuppressWarnings("javadoc")
 public class Base64 {
     /**
+     * Specify decoding (value is {@code false}).
+     */
+    public final static boolean DECODE = false;
+    /**
+     * Specify encoding (value is {@code true}).
+     */
+    public final static boolean ENCODE = true;
+    /**
      * The 64 valid Base64 values.
      */
     private final static byte[] ALPHABET = {(byte) 'A', (byte) 'B', (byte) 'C', (byte) 'D', (byte) 'E', (byte) 'F',
@@ -80,7 +88,7 @@ public class Base64 {
             // through 'z'
             -9, -9, -9, -9, -9 // Decimal 123 - 127
     /*
-	 * ,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 128 - 139 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 140
+     * ,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 128 - 139 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 140
 	 * - 152 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 153 - 165 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
 	 * Decimal 166 - 178 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 179 - 191
 	 * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
@@ -88,14 +96,6 @@ public class Base64 {
 	 * Decimal 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
 	 */
     };
-    /**
-     * Specify decoding (value is {@code false}).
-     */
-    public final static boolean DECODE = false;
-    /**
-     * Specify encoding (value is {@code true}).
-     */
-    public final static boolean ENCODE = true;
     /**
      * The equals sign (=) as a byte.
      */
@@ -160,6 +160,14 @@ public class Base64 {
     private final static byte WHITE_SPACE_ENC = -5;
 
     /**
+     * Defeats instantiation.
+     */
+    private Base64() {
+    }
+
+	/* ******** E N C O D I N G M E T H O D S ******** */
+
+    /**
      * Decodes Base64 content in byte array format and returns the decoded byte array.
      *
      * @param source The Base64 encoded data
@@ -170,8 +178,6 @@ public class Base64 {
     public static byte[] decode(final byte[] source) throws Base64DecoderException {
         return decode(source, 0, source.length);
     }
-
-	/* ******** E N C O D I N G M E T H O D S ******** */
 
     /**
      * Decodes Base64 content in byte array format and returns the decoded byte array.
@@ -310,6 +316,8 @@ public class Base64 {
         }
     } // end decodeToBytes
 
+	/* ******** D E C O D I N G M E T H O D S ******** */
+
     /**
      * Decodes web safe Base64 content in byte array format and returns the decoded data. Web safe encoding uses '-'
      * instead of '+', '_' instead of '/'
@@ -320,8 +328,6 @@ public class Base64 {
     public static byte[] decodeWebSafe(final byte[] source) throws Base64DecoderException {
         return decodeWebSafe(source, 0, source.length);
     }
-
-	/* ******** D E C O D I N G M E T H O D S ******** */
 
     /**
      * Decodes web safe Base64 content in byte array format and returns the decoded byte array. Web safe encoding uses
@@ -497,11 +503,5 @@ public class Base64 {
      */
     public static String encodeWebSafe(final byte[] source, final boolean doPadding) {
         return encode(source, 0, source.length, WEBSAFE_ALPHABET, doPadding);
-    }
-
-    /**
-     * Defeats instantiation.
-     */
-    private Base64() {
     }
 }

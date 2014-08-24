@@ -1,14 +1,15 @@
 # Exclude all generated folders
-bin/
-gen/
-build/
+/build
 
 # Exclude IntelliJ/Android Studio files
+local.properties
 .gradle
 .idea/
 *.iml
 *.iws
 *.ipr
+
+# Exclude system/temp files
 *~
 *.swp
-local.properties
+.DS_Store
