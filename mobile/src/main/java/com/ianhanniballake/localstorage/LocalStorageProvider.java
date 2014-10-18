@@ -13,6 +13,7 @@ import android.os.StatFs;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
+import android.support.v4.os.EnvironmentCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -52,7 +53,7 @@ public class LocalStorageProvider extends DocumentsProvider {
             row.add(Root.COLUMN_ROOT_ID, homeDir.getAbsolutePath());
             row.add(Root.COLUMN_DOCUMENT_ID, homeDir.getAbsolutePath());
             row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
-            row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
+            row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE | Root.FLAG_SUPPORTS_IS_CHILD);
             row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
             // These columns are optional
             row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
@@ -62,7 +63,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         }
         // Add SD card directory
         File sdCard = new File("/storage/extSdCard");
-        String storageState = Environment.getStorageState(sdCard);
+        String storageState = EnvironmentCompat.getStorageState(sdCard);
         if (TextUtils.equals(storageState, Environment.MEDIA_MOUNTED) ||
                 TextUtils.equals(storageState, Environment.MEDIA_MOUNTED_READ_ONLY)) {
             final MatrixCursor.RowBuilder row = result.newRow();
@@ -141,6 +142,11 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
+    public boolean isChildDocument(final String parentDocumentId, final String documentId) {
+        return documentId.startsWith(parentDocumentId);
+    }
+
+    @Override
     public Cursor queryChildDocuments(final String parentDocumentId, final String[] projection,
                                       final String sortOrder) throws FileNotFoundException {
         // Create a cursor with either the requested fields, or the default projection if "projection" is null.
@@ -171,8 +177,9 @@ public class LocalStorageProvider extends DocumentsProvider {
         row.add(Document.COLUMN_DISPLAY_NAME, file.getName());
         String mimeType = getDocumentType(file.getAbsolutePath());
         row.add(Document.COLUMN_MIME_TYPE, mimeType);
-        int flags = file.canWrite() ? Document.FLAG_SUPPORTS_DELETE | Document.FLAG_SUPPORTS_WRITE |
-                (mimeType.equals(Document.MIME_TYPE_DIR) ? Document.FLAG_DIR_SUPPORTS_CREATE : 0) : 0;
+        int flags = file.canWrite()
+                ? Document.FLAG_SUPPORTS_DELETE | Document.FLAG_SUPPORTS_WRITE | Document.FLAG_SUPPORTS_RENAME
+                | (mimeType.equals(Document.MIME_TYPE_DIR) ? Document.FLAG_DIR_SUPPORTS_CREATE : 0) : 0;
         // We only show thumbnails for image files - expect a call to openDocumentThumbnail for each file that has
         // this flag set
         if (mimeType.startsWith("image/"))
@@ -207,6 +214,28 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public void deleteDocument(final String documentId) throws FileNotFoundException {
         new File(documentId).delete();
+    }
+
+    @Override
+    public String renameDocument(final String documentId, final String displayName) throws FileNotFoundException {
+        File existingFile = new File(documentId);
+        if (!existingFile.exists()) {
+            throw new FileNotFoundException(documentId + " does not exist");
+        }
+        if (existingFile.getName().equals(displayName)) {
+            return null;
+        }
+        File parentDirectory = existingFile.getParentFile();
+        File newFile = new File(parentDirectory, displayName);
+        int conflictIndex = 1;
+        while (newFile.exists()) {
+            newFile = new File(parentDirectory, displayName + "_" + conflictIndex++);
+        }
+        boolean success = existingFile.renameTo(newFile);
+        if (!success) {
+            throw new FileNotFoundException("Unable to rename " + documentId + " to " + existingFile.getAbsolutePath());
+        }
+        return existingFile.getAbsolutePath();
     }
 
     @Override
