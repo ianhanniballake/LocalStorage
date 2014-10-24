@@ -3,7 +3,7 @@
     package="com.ianhanniballake.localstorage"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-<uses-feature
+    <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false"/>
 
@@ -17,8 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:uiOptions="splitActionBarWhenNarrow">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

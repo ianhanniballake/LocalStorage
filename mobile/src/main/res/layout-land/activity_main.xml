@@ -36,6 +36,13 @@
         android:layout_below="@id/open_images"
         android:text="@string/create_file"/>
 
+    <include
+        android:id="@+id/bottom_banner"
+        layout="@layout/bottom_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/create_file"/>
+
     <TextView
         android:id="@+id/returned_name"
         android:layout_width="match_parent"

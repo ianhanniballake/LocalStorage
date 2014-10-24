@@ -1,44 +1,57 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:columnCount="@integer/column_span"
-            tools:context=".MainActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_columnSpan="@integer/column_span"
-        android:layout_gravity="fill_horizontal"
-        android:layout_marginBottom="@dimen/padding_vertical"
-        android:text="@string/description"/>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_weight="1"
+        android:columnCount="@integer/column_span">
 
-    <Button
-        android:id="@+id/open_all_files"
-        android:text="@string/open_all_files"/>
+        <TextView
+            android:id="@+id/description"
+            android:layout_columnSpan="@integer/column_span"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="@dimen/padding_vertical"
+            android:text="@string/description"/>
 
-    <Button
-        android:id="@+id/open_images"
-        android:text="@string/open_images"/>
+        <Button
+            android:id="@+id/open_all_files"
+            android:text="@string/open_all_files"/>
 
-    <Button
-        android:id="@+id/create_file"
-        android:text="@string/create_file"/>
+        <Button
+            android:id="@+id/open_images"
+            android:text="@string/open_images"/>
 
-    <TextView
-        android:id="@+id/returned_name"
-        android:layout_columnSpan="@integer/column_span"
-        android:layout_gravity="fill_horizontal"
-        android:layout_marginBottom="@dimen/padding_vertical"
-        android:layout_marginTop="@dimen/padding_vertical"/>
+        <Button
+            android:id="@+id/create_file"
+            android:text="@string/create_file"/>
 
-    <ImageView
-        android:id="@+id/returned_image"
-        android:layout_columnSpan="@integer/column_span"
-        android:layout_gravity="fill_vertical|fill_horizontal"
-        android:scaleType="fitCenter"/>
+        <TextView
+            android:id="@+id/returned_name"
+            android:layout_columnSpan="@integer/column_span"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="@dimen/padding_vertical"
+            android:layout_marginTop="@dimen/padding_vertical"/>
 
-</GridLayout>
+        <ImageView
+            android:id="@+id/returned_image"
+            android:layout_columnSpan="@integer/column_span"
+            android:layout_gravity="fill_vertical|fill_horizontal"
+            android:scaleType="fitCenter"/>
+
+    </GridLayout>
+
+    <include
+        android:id="@+id/bottom_banner"
+        layout="@layout/bottom_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

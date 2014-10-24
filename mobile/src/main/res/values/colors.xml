@@ -2,4 +2,7 @@
 <resources>
     <color name="primary">#7AB7CC</color>
     <color name="primaryDark">#0099CC</color>
+
+    <color name="primaryFocused">#6BA0B2</color>
+    <color name="primaryPressed">#5E8C9C</color>
 </resources>

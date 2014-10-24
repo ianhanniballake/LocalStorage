@@ -57,6 +57,15 @@ public class MainActivity extends Activity {
         });
         mReturnedName = (TextView) findViewById(R.id.returned_name);
         mReturnedImage = (ImageView) findViewById(R.id.returned_image);
+        View bottomBanner = findViewById(R.id.bottom_banner);
+        if (bottomBanner instanceof Button) {
+            bottomBanner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    startActivity(new Intent(MainActivity.this, DonateActivity.class));
+                }
+            });
+        }
     }
 
     @Override
