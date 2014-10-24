@@ -13,47 +13,62 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="1"
+        android:columnCount="3"
         android:orientation="vertical">
 
         <TextView
+            android:layout_columnSpan="3"
             android:text="@string/donate_header"
             android:textIsSelectable="false"/>
 
         <TextView
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_marginBottom="10dp"
+            style="@style/HeaderTextView"
+            android:layout_column="0"
             android:layout_marginTop="10dp"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_action_paypal"
             android:text="@string/donate_paypal_title"
             android:textIsSelectable="false"/>
 
+        <View
+            style="@style/HeaderSeparator"
+            android:layout_column="0"
+            android:layout_columnSpan="3"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="10dp"/>
+
         <TextView
+            android:layout_columnSpan="3"
             android:text="@string/donate_paypal_description"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textIsSelectable="false"/>
 
         <Button
             android:id="@+id/paypal_button"
-            android:layout_gravity="end"
+            android:layout_column="2"
             android:text="@string/donate_button"/>
 
         <LinearLayout
             android:id="@+id/in_app_layout"
+            android:layout_column="0"
+            android:layout_columnSpan="3"
             android:layout_gravity="fill_horizontal"
             android:orientation="vertical">
 
             <TextView
-                style="?android:attr/listSeparatorTextViewStyle"
-                android:layout_width="match_parent"
+                style="@style/HeaderTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_action_google_play"
                 android:text="@string/donate_in_app_title"
                 android:textIsSelectable="false"/>
+
+            <View
+                style="@style/HeaderSeparator"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"/>
 
             <TextView
                 android:id="@+id/in_app_description"
@@ -86,5 +101,4 @@
             </LinearLayout>
         </LinearLayout>
     </GridLayout>
-
 </ScrollView>
