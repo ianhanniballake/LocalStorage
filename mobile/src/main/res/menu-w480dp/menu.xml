@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_donate"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/donate"/>
+        android:title="@string/donate"
+        app:showAsAction="ifRoom|withText"/>
 </menu>

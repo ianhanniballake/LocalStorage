@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,7 @@ import java.util.List;
 /**
  * Activity controlling donations, including Paypal and In-App Billing
  */
-public class DonateActivity extends Activity {
+public class DonateActivity extends ActionBarActivity {
     private final static String ITEM_TYPE_INAPP = "inapp";
     private final static String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnKZZkdNQIn/NPGUzeQ5WKSecjKbnTE0qNEKJNqGECHx8jSsMzUEXeM2iADJDmzDw5+yUwvAxtsLPVjiHL8s5G7jdTrN5qVA9XH+T2GnpCyPzavumgDH4DtNvDTOojJ79SXudzKynlxDXor5WYTsZTKAt+UImBcsBPR9+weYWqKZIJXIYSt2FP3OyUsKJrCuA9isqwpR/kpCbw372Rgdu85TfqDAkQcYe2cMCHU9NxilyBB+JzJxeOmE7+OI3JOBrjro8EQz1bHsVIT4cA498JcKw42tMRE6NVF6jCaxKFWl74qtxZ/muRc+3A7K/SPJvjwbkoz6yONqe+qiEpE6PuQIDAQAB";
     private final static String PURCHASED_SKU = "com.ianhanniballake.localstorage.PURCHASED_SKU";
@@ -178,6 +179,7 @@ public class DonateActivity extends Activity {
             skuPrices.put(skuArray[h], (long) skuPriceArray[h]);
         // Set up the UI
         setContentView(R.layout.activity_donate);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final Button paypal_button = (Button) findViewById(R.id.paypal_button);
         paypal_button.setOnClickListener(new View.OnClickListener() {
             /**
