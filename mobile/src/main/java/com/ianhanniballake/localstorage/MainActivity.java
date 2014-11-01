@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity {
         Button openDirectory = (Button) findViewById(R.id.open_directory);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             openDirectory.setOnClickListener(new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onClick(final View v) {
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);

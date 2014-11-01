@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,6 +51,14 @@ public class DonateActivity extends ActionBarActivity {
     private static final String RESPONSE_INAPP_PURCHASE_DATA_LIST = "INAPP_PURCHASE_DATA_LIST";
     private static final String RESPONSE_INAPP_SIGNATURE_LIST = "INAPP_DATA_SIGNATURE_LIST";
     /**
+     * SKU Product Names
+     */
+    final HashMap<String, String> skuNames = new HashMap<String, String>();
+    /**
+     * US Prices for SKUs in micro-currency
+     */
+    final HashMap<String, Long> skuPrices = new HashMap<String, Long>();
+    /**
      * InAppBillingService connection
      */
     IInAppBillingService mService;
@@ -57,14 +66,6 @@ public class DonateActivity extends ActionBarActivity {
      * Recently purchased SKU, if any. Should be saved in the instance state
      */
     String purchasedSku = "";
-    /**
-     * SKU Product Names
-     */
-    HashMap<String, String> skuNames = new HashMap<String, String>();
-    /**
-     * US Prices for SKUs in micro-currency
-     */
-    HashMap<String, Long> skuPrices = new HashMap<String, Long>();
     /**
      * List of valid SKUs
      */
@@ -298,7 +299,7 @@ public class DonateActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         purchasedSku = savedInstanceState.containsKey(PURCHASED_SKU) ? savedInstanceState.getString(PURCHASED_SKU) : "";
     }
