@@ -137,9 +137,11 @@ public class MainActivity extends ActionBarActivity {
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 mReturnedName.setText(displayName);
                 mReturnedImage.setImageURI(documentUri);
+                mReturnedImage.setContentDescription(displayName);
             } else {
                 mReturnedName.setText("");
                 mReturnedImage.setImageURI(null);
+                mReturnedImage.setContentDescription("");
             }
         } finally {
             if (cursor != null)
