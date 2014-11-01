@@ -2,7 +2,6 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -36,12 +35,19 @@
         android:layout_below="@id/open_images"
         android:text="@string/create_file"/>
 
+    <Button
+        android:id="@+id/open_directory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/create_file"
+        android:text="@string/open_directory"/>
+
     <include
         android:id="@+id/bottom_banner"
         layout="@layout/bottom_banner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/create_file"/>
+        android:layout_below="@id/open_directory"/>
 
     <TextView
         android:id="@+id/returned_name"
@@ -53,14 +59,34 @@
         android:layout_marginTop="@dimen/padding_vertical"
         android:layout_toEndOf="@id/open_all_files"/>
 
-    <ImageView
-        android:id="@+id/returned_image"
+    <ViewSwitcher
+        android:id="@+id/returned_details_switcher"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/returned_name"
-        android:layout_marginStart="@dimen/padding_horizontal"
-        android:layout_toEndOf="@id/open_all_files"
-        android:scaleType="fitCenter"/>
+        android:layout_toEndOf="@id/open_directory">
+
+        <ImageView
+            android:id="@+id/returned_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/padding_horizontal"
+            android:scaleType="fitCenter"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/returned_children"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_horizontal"/>
+        </ScrollView>
+    </ViewSwitcher>
 
 </RelativeLayout>

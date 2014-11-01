@@ -7,6 +7,8 @@
     <string name="open_all_files">Open all files</string>
     <string name="open_images">Open images</string>
     <string name="create_file">Create a file</string>
+    <string name="open_directory">Open Directory</string>
+    <string name="parent_document_title">%1$d Children for %2$s:</string>
     <!-- Donate -->
     <string name="donate">Donate</string>
     <string name="donate_header">Please consider supporting further development by donating to the developer!</string>

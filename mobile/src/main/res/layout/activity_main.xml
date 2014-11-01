@@ -7,12 +7,10 @@
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_weight="1"
         android:columnCount="@integer/column_span">
 
         <TextView
@@ -34,6 +32,10 @@
             android:id="@+id/create_file"
             android:text="@string/create_file"/>
 
+        <Button
+            android:id="@+id/open_directory"
+            android:text="@string/open_directory"/>
+
         <TextView
             android:id="@+id/returned_name"
             android:layout_columnSpan="@integer/column_span"
@@ -41,13 +43,37 @@
             android:layout_marginBottom="@dimen/padding_vertical"
             android:layout_marginTop="@dimen/padding_vertical"/>
 
+    </GridLayout>
+
+    <ViewSwitcher
+        android:id="@+id/returned_details_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
         <ImageView
             android:id="@+id/returned_image"
-            android:layout_columnSpan="@integer/column_span"
-            android:layout_gravity="fill_vertical|fill_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:scaleType="fitCenter"/>
 
-    </GridLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/returned_children"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"/>
+        </ScrollView>
+    </ViewSwitcher>
 
     <include
         android:id="@+id/bottom_banner"

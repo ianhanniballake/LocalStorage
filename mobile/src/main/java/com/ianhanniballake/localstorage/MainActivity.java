@@ -1,9 +1,13 @@
 package com.ianhanniballake.localstorage;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -12,11 +16,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 public class MainActivity extends ActionBarActivity {
-    private static final int REQUEST_CODE = 1;
+    private static final int RC_OPEN_DOCUMENT = 1;
+    private static final int RC_OPEN_DOCUMENT_TREE = 2;
     private TextView mReturnedName;
     private ImageView mReturnedImage;
+    private ViewSwitcher mReturnedDetailsSwitcher;
+    private TextView mReturnedChildren;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("*/*");
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, RC_OPEN_DOCUMENT);
             }
         });
         Button openImages = (Button) findViewById(R.id.open_images);
@@ -39,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, RC_OPEN_DOCUMENT);
             }
         });
         Button createFile = (Button) findViewById(R.id.create_file);
@@ -53,11 +61,25 @@ public class MainActivity extends ActionBarActivity {
                 // Create a file with the requested MIME type.
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_TITLE, "test_file.txt");
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, RC_OPEN_DOCUMENT);
             }
         });
+        Button openDirectory = (Button) findViewById(R.id.open_directory);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            openDirectory.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    startActivityForResult(intent, RC_OPEN_DOCUMENT_TREE);
+                }
+            });
+        } else {
+            openDirectory.setVisibility(View.GONE);
+        }
         mReturnedName = (TextView) findViewById(R.id.returned_name);
         mReturnedImage = (ImageView) findViewById(R.id.returned_image);
+        mReturnedDetailsSwitcher = (ViewSwitcher) findViewById(R.id.returned_details_switcher);
+        mReturnedChildren = (TextView) findViewById(R.id.returned_children);
         View bottomBanner = findViewById(R.id.bottom_banner);
         if (bottomBanner instanceof Button) {
             bottomBanner.setOnClickListener(new View.OnClickListener() {
@@ -89,16 +111,22 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != REQUEST_CODE) {
-            super.onActivityResult(requestCode, resultCode, data);
-            return;
-        }
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null) {
             mReturnedName.setText("");
             mReturnedImage.setImageURI(null);
             return;
         }
-        Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
+        if (requestCode == RC_OPEN_DOCUMENT) {
+            handleOpenDocument(data.getData());
+        } else if (requestCode == RC_OPEN_DOCUMENT_TREE) {
+            handleOpenDocumentTree(data.getData());
+        }
+    }
+
+    private void handleOpenDocument(Uri documentUri) {
+        mReturnedDetailsSwitcher.setDisplayedChild(0);
+        Cursor cursor = getContentResolver().query(documentUri, null, null, null, null);
         try {
             // moveToFirst() returns false if the cursor has 0 rows.  Very handy for
             // "if there's anything to look at, look at it" conditionals.
@@ -108,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
                 String displayName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 mReturnedName.setText(displayName);
-                mReturnedImage.setImageURI(data.getData());
+                mReturnedImage.setImageURI(documentUri);
             } else {
                 mReturnedName.setText("");
                 mReturnedImage.setImageURI(null);
@@ -117,5 +145,48 @@ public class MainActivity extends ActionBarActivity {
             if (cursor != null)
                 cursor.close();
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void handleOpenDocumentTree(Uri treeUri) {
+        String parentDocumentId = DocumentsContract.getTreeDocumentId(treeUri);
+        Uri parentDocumentUri = DocumentsContract.buildDocumentUri(LocalStorageProvider.AUTHORITY, parentDocumentId);
+        String parentDisplayName = parentDocumentId;
+        Cursor cursor = getContentResolver().query(parentDocumentUri, null, null, null, null);
+        try {
+            // moveToFirst() returns false if the cursor has 0 rows.  Very handy for
+            // "if there's anything to look at, look at it" conditionals.
+            if (cursor != null && cursor.moveToFirst()) {
+                // Note it's called "Display Name".  This is
+                // provider-specific, and might not necessarily be the file name.
+                parentDisplayName = cursor.getString(
+                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        mReturnedDetailsSwitcher.setDisplayedChild(1);
+        Uri documentUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, parentDocumentId);
+        cursor = getContentResolver().query(documentUri, null, null, null, null);
+        if (cursor == null) {
+            mReturnedName.setText("");
+            mReturnedChildren.setText("");
+            return;
+        }
+        mReturnedName.setText(getString(R.string.parent_document_title, cursor.getCount(), parentDisplayName));
+        StringBuilder children = new StringBuilder();
+        while (cursor.moveToNext()) {
+            // Note it's called "Display Name".  This is
+            // provider-specific, and might not necessarily be the file name.
+            String displayName = cursor.getString(
+                    cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            children.append(displayName);
+            if (!cursor.isLast()) {
+                children.append('\n');
+            }
+        }
+        mReturnedChildren.setText(children);
+        cursor.close();
     }
 }
