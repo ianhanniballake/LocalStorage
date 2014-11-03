@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +22,14 @@ import android.widget.ViewSwitcher;
 public class MainActivity extends ActionBarActivity {
     private static final int RC_OPEN_DOCUMENT = 1;
     private static final int RC_OPEN_DOCUMENT_TREE = 2;
+    private static final String LAST_RETURNED_DOCUMENT_URI = "LAST_RETURNED_DOCUMENT_URI";
+    private static final String LAST_RETURNED_DOCUMENT_TREE_URI = "LAST_RETURNED_DOCUMENT_TREE_URI";
     private TextView mReturnedName;
     private ImageView mReturnedImage;
     private ViewSwitcher mReturnedDetailsSwitcher;
     private TextView mReturnedChildren;
+    private Uri mLastReturnedDocumentUri;
+    private Uri mLastReturnedDocumentTreeUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +98,25 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mLastReturnedDocumentUri = savedInstanceState.getParcelable(LAST_RETURNED_DOCUMENT_URI);
+        mLastReturnedDocumentTreeUri = savedInstanceState.getParcelable(LAST_RETURNED_DOCUMENT_TREE_URI);
+        if (mLastReturnedDocumentUri != null) {
+            handleOpenDocument(mLastReturnedDocumentUri);
+        } else if (mLastReturnedDocumentTreeUri != null) {
+            handleOpenDocumentTree(mLastReturnedDocumentTreeUri);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(LAST_RETURNED_DOCUMENT_URI, mLastReturnedDocumentUri);
+        outState.putParcelable(LAST_RETURNED_DOCUMENT_TREE_URI, mLastReturnedDocumentTreeUri);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -139,6 +163,8 @@ public class MainActivity extends ActionBarActivity {
                 mReturnedName.setText(displayName);
                 mReturnedImage.setImageURI(documentUri);
                 mReturnedImage.setContentDescription(displayName);
+                mLastReturnedDocumentUri = documentUri;
+                mLastReturnedDocumentTreeUri = null;
             } else {
                 mReturnedName.setText("");
                 mReturnedImage.setImageURI(null);
@@ -164,6 +190,8 @@ public class MainActivity extends ActionBarActivity {
                 // provider-specific, and might not necessarily be the file name.
                 parentDisplayName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                mLastReturnedDocumentUri = null;
+                mLastReturnedDocumentTreeUri = treeUri;
             }
         } finally {
             if (cursor != null)
