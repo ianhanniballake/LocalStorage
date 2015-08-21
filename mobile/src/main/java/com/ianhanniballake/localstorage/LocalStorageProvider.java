@@ -1,5 +1,8 @@
 package com.ianhanniballake.localstorage;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -10,9 +13,12 @@ import android.os.CancellationSignal;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.StatFs;
+import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.os.EnvironmentCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,8 +47,33 @@ public class LocalStorageProvider extends DocumentsProvider {
             Document.COLUMN_DISPLAY_NAME, Document.COLUMN_FLAGS, Document.COLUMN_MIME_TYPE, Document.COLUMN_SIZE,
             Document.COLUMN_LAST_MODIFIED};
 
+    /**
+     * Check to see if we are missing the Storage permission group. In those cases, we cannot access local files and
+     * must invalidate any root URIs currently available.
+     *
+     * @param context The current Context
+     * @return whether the permission has been granted it is safe to proceed
+     */
+    static boolean isMissingPermission(@Nullable Context context) {
+        if (context == null) {
+            return true;
+        }
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Make sure that our root is invalidated as apparently we lost permission
+            context.getContentResolver().notifyChange(
+                    DocumentsContract.buildRootsUri(LocalStorageProvider.AUTHORITY), null);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Cursor queryRoots(final String[] projection) throws FileNotFoundException {
+        if (getContext() == null || ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
         // Create a cursor with either the requested fields, or the default projection if "projection" is null.
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_ROOT_PROJECTION);
         // Add Home directory
@@ -83,6 +114,9 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public String createDocument(final String parentDocumentId, final String mimeType,
                                  final String displayName) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         File newFile = new File(parentDocumentId, displayName);
         try {
             newFile.createNewFile();
@@ -96,6 +130,9 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public AssetFileDescriptor openDocumentThumbnail(final String documentId, final Point sizeHint,
                                                      final CancellationSignal signal) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         // Assume documentId points to an image file. Build a thumbnail no larger than twice the sizeHint
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -149,6 +186,9 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public Cursor queryChildDocuments(final String parentDocumentId, final String[] projection,
                                       final String sortOrder) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         // Create a cursor with either the requested fields, or the default projection if "projection" is null.
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         final File parent = new File(parentDocumentId);
@@ -164,6 +204,9 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     @Override
     public Cursor queryDocument(final String documentId, final String[] projection) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         // Create a cursor with either the requested fields, or the default projection if "projection" is null.
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         includeFile(result, new File(documentId));
@@ -196,6 +239,9 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     @Override
     public String getDocumentType(final String documentId) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         File file = new File(documentId);
         if (file.isDirectory())
             return Document.MIME_TYPE_DIR;
@@ -213,11 +259,17 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     @Override
     public void deleteDocument(final String documentId) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return;
+        }
         new File(documentId).delete();
     }
 
     @Override
     public String renameDocument(final String documentId, final String displayName) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         File existingFile = new File(documentId);
         if (!existingFile.exists()) {
             throw new FileNotFoundException(documentId + " does not exist");
@@ -241,6 +293,9 @@ public class LocalStorageProvider extends DocumentsProvider {
     @Override
     public ParcelFileDescriptor openDocument(final String documentId, final String mode,
                                              final CancellationSignal signal) throws FileNotFoundException {
+        if (LocalStorageProvider.isMissingPermission(getContext())) {
+            return null;
+        }
         File file = new File(documentId);
         final boolean isWrite = (mode.indexOf('w') != -1);
         if (isWrite) {

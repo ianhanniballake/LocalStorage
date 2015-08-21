@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Local Storage</string>
     <string name="description">The main use of this application is not through this Activity, but instead as a document provider to be used alongside Google Drive and other apps. Use the below buttons to preview your local storage as other apps would see it.</string>
+    <string name="description_permission_rationale">The main use of this application is not through this Activity,
+        but instead as a document provider. This will not function without the storage permission.</string>
+    <string name="grant_permission">Grant permission</string>
     <string name="home">Home</string>
     <string name="sd_card">SD Card</string>
     <string name="open_all_files">Open all files</string>

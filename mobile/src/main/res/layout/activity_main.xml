@@ -13,12 +13,29 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:columnCount="@integer/column_span">
 
-        <TextView
-            android:id="@+id/description"
+        <LinearLayout
+            android:id="@+id/description_container"
             android:layout_columnSpan="@integer/column_span"
             android:layout_gravity="fill_horizontal"
             android:layout_marginBottom="@dimen/padding_vertical"
-            android:text="@string/description"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/description"/>
+            <Button
+                android:id="@+id/grant_permission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="@string/grant_permission"
+                android:visibility="gone"/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/open_all_files"

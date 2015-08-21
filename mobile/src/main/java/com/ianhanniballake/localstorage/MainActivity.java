@@ -1,15 +1,20 @@
 package com.ianhanniballake.localstorage;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +25,13 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int RC_OPEN_DOCUMENT = 1;
-    private static final int RC_OPEN_DOCUMENT_TREE = 2;
+    private static final int RC_PERMISSION_REQUEST = 1;
+    private static final int RC_OPEN_DOCUMENT = 2;
+    private static final int RC_OPEN_DOCUMENT_TREE = 3;
     private static final String LAST_RETURNED_DOCUMENT_URI = "LAST_RETURNED_DOCUMENT_URI";
     private static final String LAST_RETURNED_DOCUMENT_TREE_URI = "LAST_RETURNED_DOCUMENT_TREE_URI";
+    private TextView mDescription;
+    private Button mGrantPermission;
     private TextView mReturnedName;
     private ImageView mReturnedImage;
     private ViewSwitcher mReturnedDetailsSwitcher;
@@ -35,6 +43,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDescription = (TextView) findViewById(R.id.description);
+        mGrantPermission = (Button) findViewById(R.id.grant_permission);
+        mGrantPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_PERMISSION_REQUEST);
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", getPackageName(), null));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }
+        });
         Button openAll = (Button) findViewById(R.id.open_all_files);
         openAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +119,34 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, DonateActivity.class));
                 }
             });
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    RC_PERMISSION_REQUEST);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            mDescription.setText(R.string.description);
+            mGrantPermission.setVisibility(View.GONE);
+        } else {
+            mDescription.setText(R.string.description_permission_rationale);
+            mGrantPermission.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions,
+                                           @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Ensure we update the availability of our storage provider
+            getContentResolver().notifyChange(DocumentsContract.buildRootsUri(LocalStorageProvider.AUTHORITY), null);
         }
     }
 
