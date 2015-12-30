@@ -13,6 +13,6 @@ public class MediaAvailabilityBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         // Update the root URI to ensure that only available storage directories appear
         context.getContentResolver().notifyChange(
-                DocumentsContract.buildRootsUri(LocalStorageProvider.AUTHORITY), null);
+                DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY), null);
     }
 }

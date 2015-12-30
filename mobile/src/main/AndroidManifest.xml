@@ -40,7 +40,7 @@
 
         <provider
             android:name="com.ianhanniballake.localstorage.LocalStorageProvider"
-            android:authorities="com.ianhanniballake.localstorage.documents"
+            android:authorities="${documentsAuthority}"
             android:exported="true"
             android:grantUriPermissions="true"
             android:permission="android.permission.MANAGE_DOCUMENTS">

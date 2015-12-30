@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // Ensure we update the availability of our storage provider
-            getContentResolver().notifyChange(DocumentsContract.buildRootsUri(LocalStorageProvider.AUTHORITY), null);
+            getContentResolver().notifyChange(DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY), null);
         }
     }
 
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void handleOpenDocumentTree(Uri treeUri) {
         String parentDocumentId = DocumentsContract.getTreeDocumentId(treeUri);
-        Uri parentDocumentUri = DocumentsContract.buildDocumentUri(LocalStorageProvider.AUTHORITY, parentDocumentId);
+        Uri parentDocumentUri = DocumentsContract.buildDocumentUri(BuildConfig.DOCUMENTS_AUTHORITY, parentDocumentId);
         String parentDisplayName = parentDocumentId;
         Cursor cursor = getContentResolver().query(parentDocumentUri, null, null, null, null);
         try {
