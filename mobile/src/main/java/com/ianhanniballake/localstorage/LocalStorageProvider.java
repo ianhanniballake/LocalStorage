@@ -293,12 +293,7 @@ public class LocalStorageProvider extends DocumentsProvider {
             return null;
         }
         File file = new File(documentId);
-        final boolean isWrite = (mode.indexOf('w') != -1);
-        if (isWrite) {
-            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_WRITE);
-        } else {
-            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-        }
+        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.parseMode(mode));
     }
 
     @Override
