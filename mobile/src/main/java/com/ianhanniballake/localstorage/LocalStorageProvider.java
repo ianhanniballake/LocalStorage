@@ -85,7 +85,7 @@ public class LocalStorageProvider extends DocumentsProvider {
             row.add(Root.COLUMN_DOCUMENT_ID, homeDir.getAbsolutePath());
             row.add(Root.COLUMN_TITLE, getContext().getString(R.string.home));
             row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE | Root.FLAG_SUPPORTS_IS_CHILD);
-            row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
+            row.add(Root.COLUMN_ICON, R.mipmap.ic_launcher);
             // These columns are optional
             row.add(Root.COLUMN_SUMMARY, homeDir.getAbsolutePath());
             row.add(Root.COLUMN_AVAILABLE_BYTES, new StatFs(homeDir.getAbsolutePath()).getAvailableBytes());
