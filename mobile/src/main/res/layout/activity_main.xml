@@ -1,96 +1,93 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".MainActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:columnCount="@integer/column_span">
-
-        <LinearLayout
-            android:id="@+id/description_container"
-            android:layout_columnSpan="@integer/column_span"
-            android:layout_gravity="fill_horizontal"
-            android:layout_marginBottom="@dimen/padding_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:text="@string/description"/>
-            <Button
-                android:id="@+id/grant_permission"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:text="@string/grant_permission"
-                android:visibility="gone"/>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/open_all_files"
-            android:text="@string/open_all_files"/>
-
-        <Button
-            android:id="@+id/open_images"
-            android:text="@string/open_images"/>
-
-        <Button
-            android:id="@+id/create_file"
-            android:text="@string/create_file"/>
-
-        <Button
-            android:id="@+id/open_directory"
-            android:text="@string/open_directory"/>
-
-        <TextView
-            android:id="@+id/returned_name"
-            android:layout_columnSpan="@integer/column_span"
-            android:layout_gravity="fill_horizontal"
-            android:layout_marginBottom="@dimen/padding_vertical"
-            android:layout_marginTop="@dimen/padding_vertical"/>
-
-    </GridLayout>
-
-    <ViewSwitcher
-        android:id="@+id/returned_details_switcher"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/returned_image"
+        <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:scaleType="fitCenter"/>
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:columnCount="@integer/column_span">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            <LinearLayout
+                android:id="@+id/description_container"
+                android:layout_columnSpan="@integer/column_span"
+                android:layout_gravity="fill_horizontal"
+                android:layout_marginBottom="@dimen/padding_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="@string/description"/>
+
+                <Button
+                    android:id="@+id/grant_permission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/grant_permission"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/open_all_files"
+                android:text="@string/open_all_files"/>
+
+            <Button
+                android:id="@+id/open_images"
+                android:text="@string/open_images"/>
+
+            <Button
+                android:id="@+id/create_file"
+                android:text="@string/create_file"/>
+
+            <Button
+                android:id="@+id/open_directory"
+                android:text="@string/open_directory"/>
 
             <TextView
-                android:id="@+id/returned_children"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"/>
-        </ScrollView>
-    </ViewSwitcher>
+                android:id="@+id/returned_name"
+                android:layout_columnSpan="@integer/column_span"
+                android:layout_gravity="fill_horizontal"
+                android:layout_marginBottom="@dimen/padding_vertical"
+                android:layout_marginTop="@dimen/padding_vertical"/>
+
+            <ViewSwitcher
+                android:id="@+id/returned_details_switcher"
+                android:layout_columnSpan="@integer/column_span"
+                android:layout_gravity="fill_horizontal">
+
+                <ImageView
+                    android:id="@+id/returned_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"/>
+
+                <TextView
+                    android:id="@+id/returned_children"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/activity_vertical_margin"/>
+            </ViewSwitcher>
+        </GridLayout>
+    </ScrollView>
 
     <include
         android:id="@+id/bottom_banner"
