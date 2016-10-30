@@ -31,10 +31,6 @@ import java.io.IOException;
 
 public class LocalStorageProvider extends DocumentsProvider {
     /**
-     * Authority that matches the authority in the AndroidManifest.xml for LocalStorageProvider
-     */
-    public final static String AUTHORITY = "com.ianhanniballake.localstorage.documents";
-    /**
      * Default root projection: everything but Root.COLUMN_MIME_TYPES
      */
     private final static String[] DEFAULT_ROOT_PROJECTION = new String[]{Root.COLUMN_ROOT_ID, Root.COLUMN_SUMMARY,
@@ -62,7 +58,7 @@ public class LocalStorageProvider extends DocumentsProvider {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // Make sure that our root is invalidated as apparently we lost permission
             context.getContentResolver().notifyChange(
-                    DocumentsContract.buildRootsUri(LocalStorageProvider.AUTHORITY), null);
+                    DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY), null);
             return true;
         }
         return false;
@@ -297,12 +293,7 @@ public class LocalStorageProvider extends DocumentsProvider {
             return null;
         }
         File file = new File(documentId);
-        final boolean isWrite = (mode.indexOf('w') != -1);
-        if (isWrite) {
-            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_WRITE);
-        } else {
-            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-        }
+        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.parseMode(mode));
     }
 
     @Override

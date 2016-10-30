@@ -10,6 +10,10 @@ android {
 
         versionCode 7
         versionName "2.1"
+
+        def documentsAuthorityValue = "com.ianhanniballake.localstorage.documents"
+        manifestPlaceholders = [documentsAuthority: documentsAuthorityValue]
+        buildConfigField "String", "DOCUMENTS_AUTHORITY", "\"${documentsAuthorityValue}\""
     }
 
     signingConfigs {
