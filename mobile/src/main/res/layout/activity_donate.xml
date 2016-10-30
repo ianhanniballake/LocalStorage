@@ -24,6 +24,7 @@
         <TextView
             style="@style/HeaderTextView"
             android:layout_column="0"
+            android:layout_marginBottom="2dp"
             android:layout_marginTop="10dp"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_action_paypal"
@@ -60,6 +61,7 @@
                 style="@style/HeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
                 android:layout_marginTop="10dp"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_action_google_play"
