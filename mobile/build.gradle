@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 19
@@ -35,5 +34,5 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:25.0.0"
+    implementation "com.android.support:appcompat-v7:25.0.0"
 }
