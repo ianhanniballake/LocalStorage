@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDescription = (TextView) findViewById(R.id.description);
-        mGrantPermission = (Button) findViewById(R.id.grant_permission);
+        mDescription = findViewById(R.id.description);
+        mGrantPermission = findViewById(R.id.grant_permission);
         mGrantPermission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        Button openAll = (Button) findViewById(R.id.open_all_files);
+        Button openAll = findViewById(R.id.open_all_files);
         openAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, RC_OPEN_DOCUMENT);
             }
         });
-        Button openImages = (Button) findViewById(R.id.open_images);
+        Button openImages = findViewById(R.id.open_images);
         openImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, RC_OPEN_DOCUMENT);
             }
         });
-        Button createFile = (Button) findViewById(R.id.create_file);
+        Button createFile = findViewById(R.id.create_file);
         createFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, RC_OPEN_DOCUMENT);
             }
         });
-        Button openDirectory = (Button) findViewById(R.id.open_directory);
+        Button openDirectory = findViewById(R.id.open_directory);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             openDirectory.setOnClickListener(new View.OnClickListener() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             openDirectory.setVisibility(View.GONE);
         }
-        mReturnedName = (TextView) findViewById(R.id.returned_name);
-        mReturnedImage = (ImageView) findViewById(R.id.returned_image);
-        mReturnedDetailsSwitcher = (ViewSwitcher) findViewById(R.id.returned_details_switcher);
-        mReturnedChildren = (TextView) findViewById(R.id.returned_children);
+        mReturnedName = findViewById(R.id.returned_name);
+        mReturnedImage = findViewById(R.id.returned_image);
+        mReturnedDetailsSwitcher = findViewById(R.id.returned_details_switcher);
+        mReturnedChildren = findViewById(R.id.returned_children);
         View bottomBanner = findViewById(R.id.bottom_banner);
         if (bottomBanner instanceof Button) {
             bottomBanner.setOnClickListener(new View.OnClickListener() {
@@ -204,8 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleOpenDocument(Uri documentUri) {
         mReturnedDetailsSwitcher.setDisplayedChild(0);
-        Cursor cursor = getContentResolver().query(documentUri, null, null, null, null);
-        try {
+        try (Cursor cursor = getContentResolver().query(documentUri, null, null, null, null)) {
             // moveToFirst() returns false if the cursor has 0 rows.  Very handy for
             // "if there's anything to look at, look at it" conditionals.
             if (cursor != null && cursor.moveToFirst()) {
@@ -223,9 +222,6 @@ public class MainActivity extends AppCompatActivity {
                 mReturnedImage.setImageURI(null);
                 mReturnedImage.setContentDescription("");
             }
-        } finally {
-            if (cursor != null)
-                cursor.close();
         }
     }
 

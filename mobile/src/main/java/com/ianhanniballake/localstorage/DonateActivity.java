@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -52,11 +51,11 @@ public class DonateActivity extends AppCompatActivity {
     /**
      * SKU Product Names
      */
-    final HashMap<String, String> skuNames = new HashMap<String, String>();
+    final HashMap<String, String> skuNames = new HashMap<>();
     /**
      * US Prices for SKUs in micro-currency
      */
-    final HashMap<String, Long> skuPrices = new HashMap<String, Long>();
+    final HashMap<String, Long> skuPrices = new HashMap<>();
     /**
      * InAppBillingService connection
      */
@@ -98,7 +97,8 @@ public class DonateActivity extends AppCompatActivity {
      * @return response code
      */
     static int getResponseCodeFromIntent(final Intent i) {
-        final Object o = i.getExtras().get(RESPONSE_CODE);
+        Bundle extras = i.getExtras();
+        final Object o = extras != null ? extras.get(RESPONSE_CODE) : null;
         if (o == null)
             return 0;
         else if (o instanceof Integer)
@@ -164,7 +164,7 @@ public class DonateActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Set up SKUs
-        final ArrayList<String> allSkus = new ArrayList<String>();
+        final ArrayList<String> allSkus = new ArrayList<>();
         if (BuildConfig.DEBUG) {
             allSkus.add("android.test.purchased");
             allSkus.add("android.test.canceled");
@@ -173,18 +173,18 @@ public class DonateActivity extends AppCompatActivity {
         }
         final String[] skuArray = getResources().getStringArray(R.array.donate_in_app_sku_array);
         allSkus.addAll(Arrays.asList(skuArray));
-        skus = allSkus.toArray(new String[allSkus.size()]);
+        skus = allSkus.toArray(new String[0]);
         final int[] skuPriceArray = getResources().getIntArray(R.array.donate_in_app_price_array);
         for (int h = 0; h < skuPriceArray.length; h++)
             skuPrices.put(skuArray[h], (long) skuPriceArray[h]);
         // Set up the UI
         setContentView(R.layout.activity_donate);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final Button inAppButton = (Button) findViewById(R.id.donate__in_app_button);
+        final Button inAppButton = findViewById(R.id.donate__in_app_button);
         inAppButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final Spinner inAppSpinner = (Spinner) findViewById(R.id.donate_in_app_spinner);
+                final Spinner inAppSpinner = findViewById(R.id.donate_in_app_spinner);
                 final int selectedInAppAmount = inAppSpinner.getSelectedItemPosition();
                 purchasedSku = skus[selectedInAppAmount];
                 if (BuildConfig.DEBUG)
@@ -210,43 +210,41 @@ public class DonateActivity extends AppCompatActivity {
                 }
             }
         });
-        // Start the In-App Billing process, only if on Froyo or higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-            mServiceConn = new ServiceConnection() {
-                @Override
-                public void onServiceConnected(final ComponentName name, final IBinder service) {
-                    mService = IInAppBillingService.Stub.asInterface(service);
-                    final String packageName = getPackageName();
-                    try {
-                        // check for in-app billing v3 support
-                        final int response = mService.isBillingSupported(3, packageName, ITEM_TYPE_INAPP);
-                        if (response == 0)
-                            new InventoryQueryAsyncTask(mService).execute(skus);
-                        else {
-                            Log.w(DonateActivity.class.getSimpleName(), "Initialize: In app not supported");
-                            // EasyTracker.getTracker().sendEvent("Donate", "Initialize in app not supported", "", -1L);
-                        }
-                    } catch (final RemoteException e) {
-                        Log.e(DonateActivity.class.getSimpleName(), "Initialize: Remote exception", e);
-                        // EasyTracker.getTracker().sendEvent("Donate", "Initialize remote exception", "", -1L);
+        // Start the In-App Billing process
+        mServiceConn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(final ComponentName name, final IBinder service) {
+                mService = IInAppBillingService.Stub.asInterface(service);
+                final String packageName = getPackageName();
+                try {
+                    // check for in-app billing v3 support
+                    final int response = mService.isBillingSupported(3, packageName, ITEM_TYPE_INAPP);
+                    if (response == 0)
+                        new InventoryQueryAsyncTask(mService).execute(skus);
+                    else {
+                        Log.w(DonateActivity.class.getSimpleName(), "Initialize: In app not supported");
+                        // EasyTracker.getTracker().sendEvent("Donate", "Initialize in app not supported", "", -1L);
                     }
+                } catch (final RemoteException e) {
+                    Log.e(DonateActivity.class.getSimpleName(), "Initialize: Remote exception", e);
+                    // EasyTracker.getTracker().sendEvent("Donate", "Initialize remote exception", "", -1L);
                 }
-
-                @Override
-                public void onServiceDisconnected(final ComponentName name) {
-                    mService = null;
-                }
-            };
-            final Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-            serviceIntent.setPackage("com.android.vending");
-            if (!getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty())
-                // service available to handle that Intent
-                bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
-            else {
-                // no service available to handle that Intent
-                Log.w(DonateActivity.class.getSimpleName(), "Initialize: Billing unavailable");
-                // EasyTracker.getTracker().sendEvent("Donate", "Initialize billing unavailable", "", -1L);
             }
+
+            @Override
+            public void onServiceDisconnected(final ComponentName name) {
+                mService = null;
+            }
+        };
+        final Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        if (!getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty())
+            // service available to handle that Intent
+            bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        else {
+            // no service available to handle that Intent
+            Log.w(DonateActivity.class.getSimpleName(), "Initialize: Billing unavailable");
+            // EasyTracker.getTracker().sendEvent("Donate", "Initialize billing unavailable", "", -1L);
         }
     }
 
@@ -295,7 +293,7 @@ public class DonateActivity extends AppCompatActivity {
         private final WeakReference<IInAppBillingService> mBillingService;
 
         ConsumeAsyncTask(final IInAppBillingService service, final boolean finishActivity) {
-            mBillingService = new WeakReference<IInAppBillingService>(service);
+            mBillingService = new WeakReference<>(service);
             this.finishActivity = finishActivity;
         }
 
@@ -303,7 +301,7 @@ public class DonateActivity extends AppCompatActivity {
         protected List<Purchase> doInBackground(final Purchase... purchases) {
             if (BuildConfig.DEBUG)
                 Log.d(DonateActivity.class.getSimpleName(), "Starting Consume of " + Arrays.toString(purchases));
-            final List<Purchase> consumedPurchases = new ArrayList<Purchase>();
+            final List<Purchase> consumedPurchases = new ArrayList<>();
             for (final Purchase purchase : purchases) {
                 final String sku = purchase.getSku();
                 try {
@@ -363,7 +361,7 @@ public class DonateActivity extends AppCompatActivity {
         private final WeakReference<IInAppBillingService> mBillingService;
 
         InventoryQueryAsyncTask(final IInAppBillingService service) {
-            mBillingService = new WeakReference<IInAppBillingService>(service);
+            mBillingService = new WeakReference<>(service);
         }
 
         @Override
@@ -403,7 +401,7 @@ public class DonateActivity extends AppCompatActivity {
             if (!purchases.isEmpty()) {
                 final IInAppBillingService service = mBillingService.get();
                 if (service != null)
-                    new ConsumeAsyncTask(service, false).execute(purchases.toArray(new Purchase[purchases.size()]));
+                    new ConsumeAsyncTask(service, false).execute(purchases.toArray(new Purchase[0]));
                 else
                     Log.w(DonateActivity.class.getSimpleName(), "Inventory: Billing service is null");
             }
@@ -414,8 +412,8 @@ public class DonateActivity extends AppCompatActivity {
                 skuNames.put(currentSku, sku.getTitle());
                 inAppName[h] = sku.getDescription() + " (" + sku.getPrice() + ")";
             }
-            final Spinner inAppSpinner = (Spinner) findViewById(R.id.donate_in_app_spinner);
-            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(DonateActivity.this,
+            final Spinner inAppSpinner = findViewById(R.id.donate_in_app_spinner);
+            final ArrayAdapter<String> adapter = new ArrayAdapter<>(DonateActivity.this,
                     android.R.layout.simple_spinner_item, inAppName);
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -470,8 +468,7 @@ public class DonateActivity extends AppCompatActivity {
         }
 
         int querySkuDetails(final Inventory inv, final String[] moreSkus) throws RemoteException, JSONException {
-            final ArrayList<String> skuList = new ArrayList<String>();
-            skuList.addAll(inv.getAllOwnedSkus(ITEM_TYPE_INAPP));
+            final ArrayList<String> skuList = new ArrayList<>(inv.getAllOwnedSkus(ITEM_TYPE_INAPP));
             if (moreSkus != null)
                 skuList.addAll(Arrays.asList(moreSkus));
             if (skuList.size() == 0)

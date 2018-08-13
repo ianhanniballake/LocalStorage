@@ -1,6 +1,7 @@
 package com.ianhanniballake.localstorage;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -64,8 +65,9 @@ public class LocalStorageProvider extends DocumentsProvider {
         return false;
     }
 
+    @SuppressLint("InlinedApi")
     @Override
-    public Cursor queryRoots(final String[] projection) throws FileNotFoundException {
+    public Cursor queryRoots(final String[] projection) {
         if (getContext() == null || ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return null;
@@ -109,14 +111,17 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     @Override
     public String createDocument(final String parentDocumentId, final String mimeType,
-                                 final String displayName) throws FileNotFoundException {
+            final String displayName) {
         if (LocalStorageProvider.isMissingPermission(getContext())) {
             return null;
         }
         File newFile = new File(parentDocumentId, displayName);
         try {
-            newFile.createNewFile();
-            return newFile.getAbsolutePath();
+            if (newFile.createNewFile()) {
+                return newFile.getAbsolutePath();
+            } else {
+                Log.e(LocalStorageProvider.class.getSimpleName(), "Error creating new file " + newFile);
+            }
         } catch (IOException e) {
             Log.e(LocalStorageProvider.class.getSimpleName(), "Error creating new file " + newFile);
         }
@@ -151,7 +156,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         options.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(documentId, options);
         // Write out the thumbnail to a temporary file
-        File tempFile = null;
+        File tempFile;
         FileOutputStream out = null;
         try {
             tempFile = File.createTempFile("thumbnail", null, getContext().getCacheDir());
@@ -181,7 +186,7 @@ public class LocalStorageProvider extends DocumentsProvider {
 
     @Override
     public Cursor queryChildDocuments(final String parentDocumentId, final String[] projection,
-                                      final String sortOrder) throws FileNotFoundException {
+            final String sortOrder) {
         if (LocalStorageProvider.isMissingPermission(getContext())) {
             return null;
         }
@@ -199,7 +204,7 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryDocument(final String documentId, final String[] projection) throws FileNotFoundException {
+    public Cursor queryDocument(final String documentId, final String[] projection) {
         if (LocalStorageProvider.isMissingPermission(getContext())) {
             return null;
         }
@@ -209,13 +214,14 @@ public class LocalStorageProvider extends DocumentsProvider {
         return result;
     }
 
-    private void includeFile(final MatrixCursor result, final File file) throws FileNotFoundException {
+    private void includeFile(final MatrixCursor result, final File file) {
         final MatrixCursor.RowBuilder row = result.newRow();
         // These columns are required
         row.add(Document.COLUMN_DOCUMENT_ID, file.getAbsolutePath());
         row.add(Document.COLUMN_DISPLAY_NAME, file.getName());
         String mimeType = getDocumentType(file.getAbsolutePath());
         row.add(Document.COLUMN_MIME_TYPE, mimeType);
+        @SuppressLint("InlinedApi")
         int flags = file.canWrite()
                 ? Document.FLAG_SUPPORTS_DELETE | Document.FLAG_SUPPORTS_WRITE | Document.FLAG_SUPPORTS_RENAME
                 | (mimeType.equals(Document.MIME_TYPE_DIR) ? Document.FLAG_DIR_SUPPORTS_CREATE : 0) : 0;
@@ -234,7 +240,7 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public String getDocumentType(final String documentId) throws FileNotFoundException {
+    public String getDocumentType(final String documentId) {
         if (LocalStorageProvider.isMissingPermission(getContext())) {
             return null;
         }
@@ -254,11 +260,14 @@ public class LocalStorageProvider extends DocumentsProvider {
     }
 
     @Override
-    public void deleteDocument(final String documentId) throws FileNotFoundException {
+    public void deleteDocument(final String documentId) {
         if (LocalStorageProvider.isMissingPermission(getContext())) {
             return;
         }
-        new File(documentId).delete();
+        File file = new File(documentId);
+        if (!file.delete()) {
+            Log.e(LocalStorageProvider.class.getSimpleName(), "Error deleting " + documentId);
+        }
     }
 
     @Override

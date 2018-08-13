@@ -11,8 +11,12 @@ import android.provider.DocumentsContract;
 public class MediaAvailabilityBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        // Update the root URI to ensure that only available storage directories appear
-        context.getContentResolver().notifyChange(
-                DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY), null);
+        String action = intent.getAction();
+        if (Intent.ACTION_MEDIA_MOUNTED.equals(action) ||
+                Intent.ACTION_MEDIA_REMOVED.equals(action)) {
+            // Update the root URI to ensure that only available storage directories appear
+            context.getContentResolver().notifyChange(
+                    DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY), null);
+        }
     }
 }
