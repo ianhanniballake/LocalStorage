@@ -21,35 +21,6 @@
             android:text="@string/donate_header"
             android:textIsSelectable="false"/>
 
-        <TextView
-            style="@style/HeaderTextView"
-            android:layout_column="0"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="10dp"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_action_paypal"
-            android:text="@string/donate_paypal_title"
-            android:textIsSelectable="false"/>
-
-        <View
-            style="@style/HeaderSeparator"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:layout_gravity="fill_horizontal"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:layout_columnSpan="2"
-            android:text="@string/donate_paypal_description"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textIsSelectable="false"/>
-
-        <Button
-            android:id="@+id/paypal_button"
-            android:layout_column="1"
-            android:layout_gravity="end"
-            android:text="@string/donate_button"/>
-
         <LinearLayout
             android:id="@+id/in_app_layout"
             android:layout_column="0"

@@ -15,8 +15,6 @@
     <!-- Donate -->
     <string name="donate">Donate</string>
     <string name="donate_header">Please consider supporting further development by donating to the developer!</string>
-    <string name="donate_paypal_title">PayPal</string>
-    <string name="donate_paypal_description">Donate any amount with PayPal</string>
     <string name="donate_button">Donate</string>
     <string name="donate_in_app_title">Google Play</string>
     <string name="donate_in_app_description">Donate using your Google account</string>

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -181,38 +180,6 @@ public class DonateActivity extends AppCompatActivity {
         // Set up the UI
         setContentView(R.layout.activity_donate);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final Button paypal_button = (Button) findViewById(R.id.paypal_button);
-        paypal_button.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Donate button with PayPal by opening browser with defined URL For possible parameters see:
-             * https://cms.paypal.com/us/cgi-bin/?cmd=_render -content&content_ID=
-             * developer/e_howto_html_Appx_websitestandard_htmlvariables
-             *
-             * @param v
-             *            View that was clicked
-             */
-            @Override
-            public void onClick(final View v) {
-                if (BuildConfig.DEBUG)
-                    Log.d(DonateActivity.class.getSimpleName(), "Clicked Paypal");
-                // EasyTracker.getTracker().sendEvent("Donate", "Paypal", "", 1L);
-                final Uri.Builder uriBuilder = new Uri.Builder();
-                uriBuilder.scheme("https").authority("www.paypal.com").path("cgi-bin/webscr");
-                uriBuilder.appendQueryParameter("cmd", "_donations");
-                uriBuilder.appendQueryParameter("business", "ian.hannibal.lake@gmail.com");
-                uriBuilder.appendQueryParameter("lc", "US");
-                uriBuilder.appendQueryParameter("item_name", "Local Storage Donation");
-                uriBuilder.appendQueryParameter("no_note", "1");
-                uriBuilder.appendQueryParameter("no_shipping", "1");
-                uriBuilder.appendQueryParameter("currency_code", "USD");
-                final Uri payPalUri = uriBuilder.build();
-                // Start your favorite browser
-                final Intent viewIntent = new Intent(Intent.ACTION_VIEW, payPalUri);
-                startActivity(viewIntent);
-                // Close this activity
-                finish();
-            }
-        });
         final Button inAppButton = (Button) findViewById(R.id.donate__in_app_button);
         inAppButton.setOnClickListener(new View.OnClickListener() {
             @Override
