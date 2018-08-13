@@ -6,4 +6,6 @@
 
     <color name="primaryFocused">#249fd7</color>
     <color name="primaryPressed">#1f8bbc</color>
+
+    <color name="ic_launcher_background">#FFF</color>
 </resources>
