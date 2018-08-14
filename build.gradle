@@ -5,6 +5,7 @@ buildscript {
         targetSdkVersion = compileSdkVersion
 
         kotlinVersion = "1.2.60"
+        ktxVersion = "0.3"
     }
 
     repositories {
