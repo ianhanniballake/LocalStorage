@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         val bottomBanner = findViewById<View>(R.id.bottom_banner)
         if (bottomBanner is Button) {
             bottomBanner.setOnClickListener {
-                startActivity(Intent(this@MainActivity, DonateActivity::class.java))
+                DonateDialogFragment().show(supportFragmentManager, "donate")
             }
         }
         if (ContextCompat.checkSelfPermission(this,
@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_donate -> {
-            startActivity(Intent(this, DonateActivity::class.java))
+            DonateDialogFragment().show(supportFragmentManager, "donate")
             true
         }
         else -> super.onOptionsItemSelected(item)
