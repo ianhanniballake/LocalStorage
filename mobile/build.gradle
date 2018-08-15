@@ -8,8 +8,8 @@ android {
         minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode 8
-        versionName "2.2"
+        versionCode 9
+        versionName "2.3"
 
         def documentsAuthorityValue = "com.ianhanniballake.localstorage.documents"
         manifestPlaceholders = [documentsAuthority: documentsAuthorityValue]
