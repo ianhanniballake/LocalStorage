@@ -128,17 +128,23 @@ class LocalStorageProvider : DocumentsProvider() {
             return null
         }
         val newFile = File(parentDocumentId, displayName)
-        try {
-            if (newFile.createNewFile()) {
-                return newFile.absolutePath
+        return try {
+            if (mimeType == Document.MIME_TYPE_DIR) {
+                val success = newFile.mkdir()
+                if (!success) {
+                    throw IOException("could not create directory")
+                }
             } else {
-                Log.e(TAG, "Error creating new file $newFile")
+                val success = newFile.createNewFile()
+                if (!success) {
+                    throw IOException("could not create file")
+                }
             }
+            newFile.absolutePath
         } catch (e: IOException) {
             Log.e(TAG, "Error creating new file $newFile")
+            null
         }
-
-        return null
     }
 
     @Throws(FileNotFoundException::class)
